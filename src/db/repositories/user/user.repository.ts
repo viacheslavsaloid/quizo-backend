@@ -1,8 +1,8 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
-import { getHashedPassword, getSalt } from 'src/shared';
-import { User } from 'src/db/entities';
 import { UserDto } from 'src/db/dto';
+import { getHashedPassword, getSalt, comparePasswords } from 'src/utils/helpers';
+import { User } from 'src/db/entities/user';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -10,11 +10,11 @@ export class UserRepository extends Repository<User> {
 
   async signUp(dto: UserDto): Promise<User> {
     try {
-      const { name, password, role } = dto;
+      const { name, password, roles } = dto;
 
       const user = new User();
       user.name = name;
-      user.role = role;
+      user.roles = roles;
       user.salt = await getSalt();
       user.password = await getHashedPassword(password, user.salt);
 
@@ -39,7 +39,7 @@ export class UserRepository extends Repository<User> {
 
       if (!company) {
         throw new Error('1001');
-      } else if (!(await company.validatePassword(password))) {
+      } else if (!(await comparePasswords(password, company.salt, company.password))) {
         throw new Error('1002');
       }
       return company;

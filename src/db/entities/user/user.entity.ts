@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, Column, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { UserRole } from './user-role.enum';
-import { comparePasswords } from 'src/shared';
 import { Game } from '../game';
 import { Answer } from '../answer';
+import { GameUser } from '../game-user';
 
 @Entity('users')
 export class User extends AppBaseEntity {
@@ -17,11 +17,8 @@ export class User extends AppBaseEntity {
   @Column()
   salt: string;
 
-  @Column({ nullable: true })
-  logo: string;
-
-  @Column()
-  role: UserRole;
+  @Column({ type: 'simple-array' })
+  roles: [UserRole];
 
   @OneToMany(
     type => Answer,
@@ -30,19 +27,16 @@ export class User extends AppBaseEntity {
   )
   answers: Answer[];
 
-  @ManyToMany(
-    type => Game,
-    game => game.user,
-    { onDelete: 'CASCADE' }
+  @OneToMany(
+    type => GameUser,
+    gameUser => gameUser.user
   )
-  accessGames: Game[];
+  accessGames: GameUser[];
 
   @OneToMany(
     type => Game,
-    game => game.user,
+    game => game.owner,
     { onDelete: 'CASCADE' }
   )
-  games: Game[];
-
-  validatePassword = async (password: string): Promise<boolean> => comparePasswords(password, this.salt, this.password);
+  ownGames: Game[];
 }

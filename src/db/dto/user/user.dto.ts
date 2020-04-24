@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { UserRole } from 'src/db/entities';
+import { User, UserRole } from 'src/db/entities/user';
 
 export class UserDto {
   @ApiProperty({ required: true })
@@ -11,5 +11,13 @@ export class UserDto {
   @IsString()
   password: string;
 
-  role: UserRole;
+  roles: [UserRole];
+
+  static fromDatabase(data: User): Partial<User> {
+    const fromDb = new User();
+    fromDb.id = data.id;
+    fromDb.name = data.name;
+    fromDb.roles = data.roles;
+    return fromDb;
+  }
 }

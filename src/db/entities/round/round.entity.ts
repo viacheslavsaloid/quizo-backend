@@ -3,11 +3,7 @@ import { Question } from './../question/question.entity';
 import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { Game } from '../game';
-import { IsOptional } from 'class-validator';
-import { CrudValidationGroups } from '@nestjsx/crud';
 import { ApiProperty } from '@nestjs/swagger';
-
-const { CREATE, UPDATE } = CrudValidationGroups;
 
 @Entity('rounds')
 export class Round extends AppBaseEntity {
@@ -20,21 +16,18 @@ export class Round extends AppBaseEntity {
   order: number;
 
   @ApiProperty({ required: false })
-  @IsOptional({ groups: [CREATE, UPDATE] })
   @Column({ type: 'simple-array', nullable: true })
   hints: string[];
 
   @OneToMany(
     type => Question,
-    question => question.round,
-    { onDelete: 'CASCADE' }
+    question => question.round
   )
-  questions: Round[];
+  questions: Question[];
 
   @ManyToOne(
     type => Game,
-    game => game.rounds,
-    { onDelete: 'CASCADE' }
+    game => game.rounds
   )
   game: Game;
 }

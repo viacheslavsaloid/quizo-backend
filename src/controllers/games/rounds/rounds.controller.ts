@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Logger, Post, Param, Body } from '@nestjs/common';
 import { Crud, CrudController } from '@nestjsx/crud';
 import { RoundsService } from 'src/services/game';
-import { JwtAuthGuard } from 'src/guards';
+import { JwtAuthGuard } from 'src/shared/guards';
 import { Round } from 'src/db/entities/round';
 
 @UseGuards(JwtAuthGuard)

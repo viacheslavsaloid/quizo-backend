@@ -1,22 +1,21 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from '../settings/strategies/jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JWT_CONFIGS, PASSPORT_CONFIGS } from 'src/settings/configs';
+import { JWT_CONFIGS, PASSPORT_CONFIGS } from 'src/shared/configs';
 import { AUTH_CONTROLLERS } from 'src/controllers/auth';
-import { AUTH_SERVICES } from 'src/services/auth';
-import { USER_REPOSITORIES } from 'src/db/repositories';
 import { GameModule } from './game.module';
+import { AUTH_REPOSITORIES } from 'src/db/repositories';
+import { AUTH_SERVICES } from 'src/services/auth';
 
 const AUTH_IMPORTS = [
   PassportModule.register(PASSPORT_CONFIGS),
   JwtModule.registerAsync(JWT_CONFIGS),
-  TypeOrmModule.forFeature(USER_REPOSITORIES),
+  TypeOrmModule.forFeature(AUTH_REPOSITORIES),
   forwardRef(() => GameModule)
 ];
-const AUTH_PROVIDERS = [...AUTH_SERVICES, JwtStrategy];
-const AUTH_EXPORTS = [PassportModule, JwtStrategy];
+const AUTH_PROVIDERS = [...AUTH_SERVICES];
+const AUTH_EXPORTS = [...AUTH_SERVICES, PassportModule, JwtModule];
 
 @Module({
   imports: AUTH_IMPORTS,

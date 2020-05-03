@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { Round } from '../round';
 import { Answer } from '../answer';
@@ -21,15 +21,13 @@ export class Question extends AppBaseEntity {
 
   @OneToMany(
     type => Answer,
-    answer => answer.question,
-    { onDelete: 'CASCADE' }
+    answer => answer.question
   )
   answers: Answer[];
 
   @ManyToOne(
     type => Round,
-    round => round.questions,
-    { onDelete: 'CASCADE' }
+    round => round.questions
   )
   round: Round;
 }

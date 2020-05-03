@@ -1,4 +1,5 @@
 export enum UserRole {
   COMPANY = 'company',
-  PLAYER = 'player'
+  PLAYER = 'player',
+  NOT_REGISTERED = 'not-registered'
 }

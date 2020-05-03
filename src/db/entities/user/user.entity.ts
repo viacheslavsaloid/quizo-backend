@@ -1,42 +1,44 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, OneToOne } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { UserRole } from './user-role.enum';
 import { Game } from '../game';
 import { Answer } from '../answer';
-import { GameUser } from '../game-user';
+import { TelegramAction } from '../telegram-action';
+import { Player } from '../player';
 
 @Entity('users')
 export class User extends AppBaseEntity {
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
+  telegramId: string;
+
+  @Column({ unique: true, nullable: true })
   name: string;
 
-  @Column()
-  password: string;
-
-  @Column()
+  @Column({ nullable: true })
   salt: string;
+
+  @Column({ nullable: true })
+  password: string;
 
   @Column({ type: 'simple-array' })
   roles: [UserRole];
 
   @OneToMany(
     type => Answer,
-    answer => answer.user,
-    { onDelete: 'CASCADE' }
+    answer => answer.user
   )
   answers: Answer[];
 
   @OneToMany(
-    type => GameUser,
-    gameUser => gameUser.user
+    type => Player,
+    player => player.user
   )
-  accessGames: GameUser[];
+  accessGames: Player[];
 
   @OneToMany(
     type => Game,
-    game => game.owner,
-    { onDelete: 'CASCADE' }
+    game => game.owner
   )
   ownGames: Game[];
 }

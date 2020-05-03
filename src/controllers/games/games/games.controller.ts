@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Logger, Post, Body, Param } from '@nestjs/common';
+import { Controller, Logger, Post, Body, Param, Get, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   Crud,
   CrudController,
@@ -11,29 +11,20 @@ import {
   CrudOptions
 } from '@nestjsx/crud';
 import { GamesService } from 'src/services/game';
-import { JwtAuthGuard } from 'src/guards';
+import { User, Game } from 'src/db/entities';
+import { GetRolesAccessesTo, GetUser } from 'src/shared/decorators';
+import { Public } from 'src/shared/decorators/public.decorator';
+import { JwtAuthGuard } from 'src/shared/guards';
 import { ACGuard } from 'nest-access-control';
-import { User, UserRole, Game } from 'src/db/entities';
-import { GetRolesAccessesTo, GetUser } from 'src/utils/decorators';
-
-function filterGames(user: User) {
-  return user.roles.includes(UserRole.COMPANY)
-    ? {
-        owner: user.id
-      }
-    : {
-        ['players.user.id']: user.id,
-        ['players.access']: true
-      };
-}
+import { AccessControlInterceptor } from 'src/shared/interceptor';
+import { PermissionsGuard } from 'src/shared/guards/permissions.guard';
 
 const CONTROLLER_NAME = 'games';
 
-const HasAccessTo = GetRolesAccessesTo(CONTROLLER_NAME);
+const HasUserAccessTo = GetRolesAccessesTo(CONTROLLER_NAME);
 
 const GamesAuth = {
   property: 'user',
-  filter: filterGames,
   persist: (user: User) => ({
     owner: user
   })
@@ -58,6 +49,9 @@ const GamesCrudOptions: CrudOptions = {
       players: {
         eager: true
       },
+      owner: {
+        eager: true
+      },
       ['players.user']: {
         eager: true,
         allow: ['id', 'name']
@@ -72,8 +66,8 @@ const GamesCrudOptions: CrudOptions = {
   }
 };
 
-@UseGuards(ACGuard)
-@UseGuards(JwtAuthGuard)
+@UseInterceptors(AccessControlInterceptor)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Crud(GamesCrudOptions)
 @CrudAuth(GamesAuth)
 @Controller(CONTROLLER_NAME)
@@ -85,51 +79,77 @@ export class GamesController implements CrudController<Game> {
     return this;
   }
 
-  @HasAccessTo('read')
+  @Public()
+  @HasUserAccessTo('read')
   @Override()
   getMany(@ParsedRequest() req: CrudRequest) {
     return this.base.getManyBase(req);
   }
 
-  @HasAccessTo('read')
+  @Public()
+  @HasUserAccessTo('read')
   @Override()
-  getOneBase(@ParsedRequest() req: CrudRequest) {
-    return this.base.getOneBase(req);
+  async getOne(@ParsedRequest() req: CrudRequest) {
+    const game = await this.base.getOneBase(req);
+    const count = await this.service.getCount();
+    return {
+      game,
+      count
+    };
   }
 
-  @HasAccessTo('create')
+  @HasUserAccessTo('create')
   @Override()
   createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
     return this.base.createOneBase(req, dto);
   }
 
-  @HasAccessTo('create')
+  @HasUserAccessTo('create')
   @Override()
   createMany(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: CreateManyDto<Game>) {
     return this.base.createManyBase(req, dto);
   }
 
-  @HasAccessTo('update')
+  @HasUserAccessTo('update')
   @Override()
   updateOneBase(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
     return this.base.updateOneBase(req, dto);
   }
 
-  @HasAccessTo('update')
+  @HasUserAccessTo('update')
   @Override()
   replaceOneBase(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
     return this.base.replaceOneBase(req, dto);
   }
 
-  @HasAccessTo('delete')
+  @HasUserAccessTo('delete')
   @Override()
   deleteOne(@ParsedRequest() req: CrudRequest) {
     return this.base.deleteOneBase(req);
   }
 
-  @HasAccessTo('update')
+  @HasUserAccessTo('update')
   @Post(':id/access')
-  async check(@Param('id') id, @Body() body) {
-    return this.service.giveAccess({ gameId: id, user: body });
+  giveAccess(@Param('id') id, @Body() user) {
+    return this.service.giveAccess({ gameId: id, user });
+  }
+
+  @HasUserAccessTo('read')
+  @Public()
+  @Get(':id/access')
+  hasAccess(@Param('id') id, @GetUser() user) {
+    return this.service.hasAccess({ gameId: id, user });
+  }
+
+  @HasUserAccessTo('create')
+  @Post(':id/generate')
+  generateToken(@Param('id') id) {
+    return this.service.generateToken(id);
+  }
+
+  @Public()
+  @Get('count')
+  getCount() {
+    return this.service.getCount();
   }
 }

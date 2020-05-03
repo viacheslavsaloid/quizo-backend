@@ -1,33 +1,31 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
-import { UserDto } from 'src/db/dto';
-import { getHashedPassword, getSalt, comparePasswords } from 'src/utils/helpers';
+import { UserDto } from 'src/shared/dto';
+import { getHashedPassword, getSalt, comparePasswords } from 'src/shared/helpers';
 import { User } from 'src/db/entities/user';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  logger = new Logger('Company Repository');
+  logger = new Logger('User Repository');
 
   async signUp(dto: UserDto): Promise<User> {
     try {
-      const { name, password, roles } = dto;
-
       const user = new User();
-      user.name = name;
-      user.roles = roles;
+
       user.salt = await getSalt();
-      user.password = await getHashedPassword(password, user.salt);
+
+      for (const key in dto) {
+        if (dto.hasOwnProperty(key)) {
+          user[key] = key === 'password' ? await getHashedPassword(dto[key], user.salt) : dto[key];
+        }
+      }
 
       await user.save();
+
       return user;
     } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException({
-          code: 1000
-        });
-      } else {
-        throw new InternalServerErrorException();
-      }
+      const returnError = error.code === '23505' ? { code: '1000' } : error;
+      throw new ConflictException(returnError);
     }
   }
 
@@ -35,23 +33,18 @@ export class UserRepository extends Repository<User> {
     try {
       const { name, password } = dto;
 
-      const company = await this.findOne({ name });
+      const user = await this.findOne({ name });
 
-      if (!company) {
+      if (!user) {
         throw new Error('1001');
-      } else if (!(await comparePasswords(password, company.salt, company.password))) {
+      } else if (!(await comparePasswords(password, user.salt, user.password))) {
         throw new Error('1002');
       }
-      return company;
+      return user;
     } catch (error) {
-      switch (error.message) {
-        case '1001':
-        case '1002':
-          throw new ConflictException({
-            code: error.message
-          });
-      }
-      throw new InternalServerErrorException();
+      throw new ConflictException({
+        code: error.message
+      });
     }
   }
 }

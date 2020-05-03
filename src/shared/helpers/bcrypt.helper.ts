@@ -4,4 +4,4 @@ export const getHashedPassword = (password: string, salt: string): Promise<strin
 export const getSalt = () => genSalt();
 
 export const comparePasswords = async (password: string, salt: string, hashedPassword: string): Promise<boolean> =>
-  (await getHashedPassword(password, salt)) === hashedPassword;
+  password ? (await getHashedPassword(password, salt)) === hashedPassword : false;

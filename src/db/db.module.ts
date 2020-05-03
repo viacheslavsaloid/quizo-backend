@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ORM_CONFIGS } from './configs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ORM_CONFIGS } from 'src/shared/configs';
 
 const DB_IMPORTS = [TypeOrmModule.forRootAsync(ORM_CONFIGS)];
 

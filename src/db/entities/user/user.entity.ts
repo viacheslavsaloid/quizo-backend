@@ -1,48 +1,44 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, Column, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, OneToMany, OneToOne } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { UserRole } from './user-role.enum';
-import { comparePasswords } from 'src/shared';
 import { Game } from '../game';
 import { Answer } from '../answer';
+import { TelegramAction } from '../telegram-action';
+import { Player } from '../player';
 
 @Entity('users')
 export class User extends AppBaseEntity {
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
+  telegramId: string;
+
+  @Column({ unique: true, nullable: true })
   name: string;
 
-  @Column()
-  password: string;
-
-  @Column()
+  @Column({ nullable: true })
   salt: string;
 
   @Column({ nullable: true })
-  logo: string;
+  password: string;
 
-  @Column()
-  role: UserRole;
+  @Column({ type: 'simple-array' })
+  roles: [UserRole];
 
   @OneToMany(
     type => Answer,
-    answer => answer.user,
-    { onDelete: 'CASCADE' }
+    answer => answer.user
   )
   answers: Answer[];
 
-  @ManyToMany(
-    type => Game,
-    game => game.user,
-    { onDelete: 'CASCADE' }
+  @OneToMany(
+    type => Player,
+    player => player.user
   )
-  accessGames: Game[];
+  accessGames: Player[];
 
   @OneToMany(
     type => Game,
-    game => game.user,
-    { onDelete: 'CASCADE' }
+    game => game.owner
   )
-  games: Game[];
-
-  validatePassword = async (password: string): Promise<boolean> => comparePasswords(password, this.salt, this.password);
+  ownGames: Game[];
 }

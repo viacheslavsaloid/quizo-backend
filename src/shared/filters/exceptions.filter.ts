@@ -1,6 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { DebugLogger } from '../helpers';
-import * as path from 'path';
 
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {
@@ -11,9 +10,6 @@ export class ExceptionsFilter implements ExceptionFilter {
 
     DebugLogger(this, request.url, exception);
 
-    if (exception instanceof NotFoundException) {
-      response.sendFile(path.join(__dirname, '../../../dist/index.html'));
-    }
     const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     response.status(statusCode).json({

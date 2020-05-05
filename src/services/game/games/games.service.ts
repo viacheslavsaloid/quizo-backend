@@ -9,10 +9,7 @@ import { PlayerRepository } from 'src/db/repositories';
 export class GamesService extends TypeOrmCrudService<Game> {
   private logger = new Logger('Game Service');
 
-  constructor(
-    @InjectRepository(Game) private repository: Repository<Game>,
-    private playerRepository: PlayerRepository
-  ) {
+  constructor(@InjectRepository(Game) private repository: Repository<Game>, private playerRepository: PlayerRepository) {
     super(repository);
   }
 
@@ -85,8 +82,11 @@ export class GamesService extends TypeOrmCrudService<Game> {
   public async useToken(params) {
     const { user, token } = params;
 
-    await this.playerRepository.update({ id: token }, { user });
-    return await this.playerRepository.findOne(token, { relations: ['game'] });
+    const player = await this.playerRepository.findOne(token, { relations: ['game', 'game.rounds', 'game.rounds.questions'] });
+
+    await this.playerRepository.update(player.id, { user });
+
+    return player;
   }
 
   public getUserGame = filter => this.playerRepository.findOne(filter);

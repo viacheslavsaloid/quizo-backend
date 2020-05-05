@@ -40,7 +40,7 @@ export class RoundsController implements CrudController<Round> {
   }
 
   @Post('sort')
-  async sort(@Body() rounds: Round[]) {
-    return this.service.sort(rounds);
+  async sort(@Body() data: { rounds: Round[] }) {
+    return this.service.sort(data.rounds);
   }
 }

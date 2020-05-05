@@ -1,0 +1,7 @@
+export enum GameScene {
+  START = 'START',
+  REGISTRATION = 'REGISTRATION',
+  GAME_START = 'GAME_START',
+  GAME = 'GAME',
+  ROUND = 'ROUND'
+}

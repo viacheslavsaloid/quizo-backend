@@ -4,7 +4,7 @@ import { User, UserRole } from 'src/db/entities/user';
 
 export class UserDto {
   @ApiProperty({ required: false })
-  telegramId?: string;
+  telegramId?: number;
 
   @ApiProperty({ required: false })
   @IsString()
@@ -20,7 +20,7 @@ export class UserDto {
   @ApiProperty({ required: false })
   scene?: number;
 
-  roles: [UserRole];
+  roles?: [UserRole];
 
   static fromDatabase(data: User): Partial<User> {
     const fromDb = new User();

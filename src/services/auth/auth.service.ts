@@ -4,8 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtPayload, AuthResponse } from 'src/shared/models';
 import { UserDto } from 'src/shared/dto';
 import { GamesService } from '../game';
-import { UserRole } from 'src/db/entities/user';
+import { UserRole, Player, User } from 'src/db/entities';
 import { UserRepository } from 'src/db/repositories/user';
+import { PlayerRepository } from 'src/db/repositories';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     @InjectRepository(UserRepository)
     private repository: UserRepository,
+    private playerRepository: PlayerRepository,
     private jwtService: JwtService,
     private gamesService: GamesService
   ) {}
@@ -23,10 +25,7 @@ export class AuthService {
   });
 
   public async getTelegramUser(telegramId) {
-    const exist = await this.repository.findOne(
-      { telegramId },
-      { relations: ['accessGames', 'accessGames.user', 'accessGames.game'] }
-    );
+    const exist = await this.repository.findOne({ telegramId }, { relations: ['accessGames', 'accessGames.user', 'accessGames.game'] });
 
     if (exist) {
       return exist;
@@ -66,14 +65,17 @@ export class AuthService {
     return this.getToken({ name, id, roles });
   }
 
-  public async signUp(dto: UserDto): Promise<AuthResponse> {
-    const { name, id, roles } = await this.repository.signUp({ ...dto, roles: [UserRole.COMPANY] });
-    return this.getToken({ name, id, roles });
+  public async signUp(dto: UserDto, role: UserRole = UserRole.COMPANY): Promise<User> {
+    return this.repository.signUp({ ...dto, roles: [role] });
   }
 
   public async signIn(dto: UserDto): Promise<AuthResponse> {
     const { name, id, roles } = await this.repository.signIn(dto);
     return this.getToken({ name, id, roles });
+  }
+
+  public async getUser(params) {
+    return this.repository.findOne(params);
   }
 
   public async isOwner(userId, id) {
@@ -94,11 +96,15 @@ export class AuthService {
     }
   }
 
-  public async getUser(params) {
-    return this.repository.findOne(params);
-  }
-
   public async createPlayer(params) {
-    return this.repository.signUp({ ...params, roles: [UserRole.PLAYER] });
+    const user = await this.repository.signUp({ ...params, roles: [UserRole.PLAYER] });
+
+    const player = new Player();
+
+    player.user = user;
+
+    await player.save();
+
+    return player;
   }
 }

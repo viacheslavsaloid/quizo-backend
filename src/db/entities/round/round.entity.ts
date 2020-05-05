@@ -8,7 +8,7 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity('rounds')
 export class Round extends AppBaseEntity {
   @ApiProperty()
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar' })
   name: string;
 
   @ApiProperty()
@@ -27,7 +27,8 @@ export class Round extends AppBaseEntity {
 
   @ManyToOne(
     type => Game,
-    game => game.rounds
+    game => game.rounds,
+    { cascade: true }
   )
   game: Game;
 }

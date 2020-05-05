@@ -8,8 +8,8 @@ import { TelegrafModule } from 'nestjs-telegraf';
 
 const TELEGRAM_IMPORTS = [
   TelegrafModule.forRoot({
-    // token: '1156461467:AAE3RV0SRhVSqGhyiYJdbYU56q4wvPP-I_M' // prod
-    token: '1127432307:AAG-gxVyFWqTqehzWqRiiuLeaBCDmWq537w' // test
+    token: '1156461467:AAE3RV0SRhVSqGhyiYJdbYU56q4wvPP-I_M' // prod
+    // token: '1127432307:AAG-gxVyFWqTqehzWqRiiuLeaBCDmWq537w' // test
   }),
   TypeOrmModule.forFeature(TELEGRAM_REPOSITORIES),
   AuthModule,

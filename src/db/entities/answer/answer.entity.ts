@@ -6,18 +6,20 @@ import { Question } from './../question/question.entity';
 
 @Entity('user')
 export class Answer extends AppBaseEntity {
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar' })
   data: string;
 
   @ManyToOne(
     type => Question,
-    question => question.answers
+    question => question.answers,
+    { cascade: true }
   )
   question: Question;
 
   @ManyToOne(
     type => User,
-    user => user.answers
+    user => user.answers,
+    { cascade: true }
   )
   user: User;
 }

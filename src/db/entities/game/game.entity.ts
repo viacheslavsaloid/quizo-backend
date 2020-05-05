@@ -5,12 +5,11 @@ import { User } from '../user';
 import { Round } from '../round';
 import { GameType } from './game-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { TelegramAction } from '../telegram-action';
 import { Player } from '../player';
 @Entity('games')
 export class Game extends AppBaseEntity {
   @ApiProperty()
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar' })
   name: string;
 
   @ApiProperty({ enum: GameType })
@@ -22,19 +21,19 @@ export class Game extends AppBaseEntity {
   private: boolean;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   activeRound: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   logo: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   background: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   preview: string;
 
   @ApiProperty({ required: false })
@@ -56,12 +55,6 @@ export class Game extends AppBaseEntity {
   };
 
   @OneToMany(
-    type => TelegramAction,
-    telegramAction => telegramAction.game
-  )
-  telegramActions: TelegramAction[];
-
-  @OneToMany(
     type => Round,
     round => round.game
   )
@@ -75,7 +68,8 @@ export class Game extends AppBaseEntity {
 
   @ManyToOne(
     type => User,
-    user => user.ownGames
+    user => user.ownGames,
+    { cascade: true }
   )
   owner: User;
 }

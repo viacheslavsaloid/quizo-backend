@@ -8,15 +8,15 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity('questions')
 export class Question extends AppBaseEntity {
   @ApiProperty()
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar' })
   title: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   correctAnswer: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   media: string;
 
   @OneToMany(
@@ -27,7 +27,8 @@ export class Question extends AppBaseEntity {
 
   @ManyToOne(
     type => Round,
-    round => round.questions
+    round => round.questions,
+    { cascade: true }
   )
   round: Round;
 }

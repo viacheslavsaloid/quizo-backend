@@ -13,8 +13,9 @@ export class AuthController {
 
   @Swagger(UserDto)
   @Post('/signup')
-  signUpAsCompany(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
-    return this.authService.signUp(dto);
+  async signUpAsCompany(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
+    const { name, id, roles } = await this.authService.signUp(dto);
+    return await this.authService.getToken({ name, id, roles });
   }
 
   @Swagger(UserDto)

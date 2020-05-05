@@ -4,5 +4,4 @@ export * from './game';
 export * from './question';
 export * from './round';
 export * from './user';
-export * from './telegram-action';
 export * from './player';

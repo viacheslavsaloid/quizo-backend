@@ -4,7 +4,6 @@ import { AppBaseEntity } from '../base';
 import { UserRole } from './user-role.enum';
 import { Game } from '../game';
 import { Answer } from '../answer';
-import { TelegramAction } from '../telegram-action';
 import { Player } from '../player';
 
 @Entity('users')
@@ -23,6 +22,14 @@ export class User extends AppBaseEntity {
 
   @Column({ type: 'simple-array' })
   roles: [UserRole];
+
+  @Column({ type: 'jsonb', default: () => "'[]'" })
+  telegramMessages: [
+    {
+      id: number;
+      remove: boolean;
+    }
+  ];
 
   @OneToMany(
     type => Answer,

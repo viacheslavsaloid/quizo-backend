@@ -15,7 +15,6 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ExceptionsFilter } from 'src/shared/filters/exceptions.filter';
 import { TransformInterceptor } from 'src/shared/interceptor';
 import { MorganModule, MorganInterceptor } from 'nest-morgan';
-import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramModule } from './telegram.module';
 
 const ROOT_IMPORTS = [
@@ -23,14 +22,11 @@ const ROOT_IMPORTS = [
   RouterModule.forRoutes(ROOT_ROUTES),
   AccessControlModule.forRoles(ROOT_ROLES),
   MorganModule.forRoot(),
-  TelegrafModule.forRoot({
-    token: '1156461467:AAE3RV0SRhVSqGhyiYJdbYU56q4wvPP-I_M'
-  }),
   DbModule,
   GameModule,
   AuthModule,
   ImagesModule,
-  TelegramModule
+  TelegramModule,
 ];
 
 @Module({
@@ -38,17 +34,17 @@ const ROOT_IMPORTS = [
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: MorganInterceptor('combined')
+      useClass: MorganInterceptor('combined'),
     },
     {
       provide: APP_FILTER,
-      useClass: ExceptionsFilter
+      useClass: ExceptionsFilter,
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor
-    }
-  ]
+      useClass: TransformInterceptor,
+    },
+  ],
 })
 export class RootModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

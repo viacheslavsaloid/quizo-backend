@@ -5,12 +5,10 @@ import { AuthModule } from './auth.module';
 import { TELEGRAM_REPOSITORIES } from 'src/db/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { TELEGRAM_CONFIGS } from 'src/shared/configs'
 
 const TELEGRAM_IMPORTS = [
-  TelegrafModule.forRoot({
-    token: '1156461467:AAE3RV0SRhVSqGhyiYJdbYU56q4wvPP-I_M' // prod
-    // token: '1127432307:AAG-gxVyFWqTqehzWqRiiuLeaBCDmWq537w' // test
-  }),
+  TelegrafModule.forRootAsync(TELEGRAM_CONFIGS),
   TypeOrmModule.forFeature(TELEGRAM_REPOSITORIES),
   AuthModule,
   GameModule

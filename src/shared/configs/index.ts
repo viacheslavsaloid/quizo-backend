@@ -4,3 +4,4 @@ export * from './multer.configs';
 export * from './orm.configs';
 export * from './passport.configs';
 export * from './config.configs';
+export * from './telegram.configs';

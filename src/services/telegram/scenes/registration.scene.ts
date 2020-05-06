@@ -3,13 +3,13 @@ import { GameScene } from 'src/db/entities/player/game-scene';
 import { SceneProps } from 'src/shared/models/telegram/scene.model';
 
 export async function registrationSceneEnter(props: SceneProps) {
-  const { ctx, repository } = props;
-  await sendMessage({ ctx, messageNumber: 1, repository });
+  const { ctx } = props;
+  await sendMessage({ ctx, messageNumber: 1 });
   return ctx.wizard.next();
 }
 
 export async function registrationSceneTokenHandler(props: Partial<SceneProps>) {
-  const { ctx, service, repository } = props;
+  const { ctx, service } = props;
 
   const token = ctx.message.text;
 
@@ -20,6 +20,6 @@ export async function registrationSceneTokenHandler(props: Partial<SceneProps>) 
     ctx.session.game = player.game;
     ctx.scene.enter(GameScene.GAME_START);
   } else {
-    await sendMessage({ ctx, messageNumber: 3, repository });
+    await sendMessage({ ctx, messageNumber: 3 });
   }
 }

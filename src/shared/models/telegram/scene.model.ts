@@ -3,6 +3,6 @@ import { Repository } from 'typeorm';
 
 export interface SceneProps {
   ctx: AppContext;
-  repository: Repository<any>;
+  repository?: Repository<any>;
   service?: any;
 }

@@ -4,17 +4,17 @@ import { AppContext } from 'src/shared/models/telegram/context.model';
 
 interface Props {
   ctx: AppContext;
-  repository: Repository<User>;
+  repository?: Repository<User>;
   force?: boolean;
   deleteCurrent?: boolean;
 }
 
 export async function clearChat(props: Props) {
-  const { ctx, force, repository, deleteCurrent = true } = props;
+  const { ctx, force, deleteCurrent = true } = props;
 
-  const user = await repository.findOne(ctx.session.user.id);
+  const { messages = [] } = ctx.session;
 
-  const messagesForDelete = user.telegramMessages.filter(msg => force || msg.remove);
+  const messagesForDelete = messages.filter(msg => force || msg.remove);
 
   if (deleteCurrent) {
     await ctx.deleteMessage();
@@ -26,7 +26,5 @@ export async function clearChat(props: Props) {
     } catch (err) {}
   }
 
-  const restMessages = user.telegramMessages.filter(def => !messagesForDelete.some(del => del.id === def.id));
-
-  await repository.update({ id: user.id }, { telegramMessages: restMessages });
+  ctx.session.messages = messages.filter(def => !messagesForDelete.some(del => del.id === def.id));
 }

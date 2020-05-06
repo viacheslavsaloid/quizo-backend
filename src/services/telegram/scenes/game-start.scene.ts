@@ -6,16 +6,16 @@ import { SceneProps } from 'src/shared/models/telegram/scene.model';
 export async function gameStartSceneEnter(props: SceneProps) {
   await clearChat(props);
 
-  const { ctx, repository } = props;
+  const { ctx } = props;
 
   const game = ctx.session.game;
 
   if (game.hi) {
-    await sendMessage({ ctx, message: game.hi.title, repository });
-    await sendMessage({ ctx, message: game.hi.description, repository });
+    await sendMessage({ ctx, message: game.hi.title });
+    await sendMessage({ ctx, message: game.hi.description });
   }
 
-  await sendMessage({ ctx, messageNumber: 4, markupNumber: 1, repository });
+  await sendMessage({ ctx, messageNumber: 4, markupNumber: 1 });
 
   ctx.wizard.next();
 }
@@ -23,9 +23,5 @@ export async function gameStartSceneEnter(props: SceneProps) {
 export async function gameStartScene(props: SceneProps) {
   const { ctx } = props;
 
-  if (ctx.message.text === 'Начать Игру') {
-    ctx.scene.enter(GameScene.GAME);
-  } else {
-    ctx.deleteMessage();
-  }
+  ctx.scene.enter(GameScene.GAME);
 }

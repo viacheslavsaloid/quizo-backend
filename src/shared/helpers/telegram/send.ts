@@ -5,18 +5,13 @@ import { TELEGRAM_MESSAGES, TELEGRAM_MARKUPS } from 'src/data/telegram';
 import * as fs from 'fs';
 
 async function saveMessageId(msg, props: SendMessage) {
-  const { ctx, repository, removeMessage: remove = true } = props;
+  const { ctx, removeMessage: remove = true } = props;
+  const { messages = [] } = ctx.session;
 
-  if (repository) {
-    const user = await repository.findOne(ctx.session.user.id);
+  const replyMessage = { id: msg.message_id, remove };
+  const getMessage = { id: ctx.message.message_id, remove };
 
-    const replyMessage = { id: msg.message_id, remove };
-    const getMessage = { id: ctx.message.message_id, remove };
-
-    const telegramMessages = [...user.telegramMessages, replyMessage, getMessage];
-
-    repository.update({ id: user.id }, { telegramMessages });
-  }
+  ctx.session.messages = [...messages, replyMessage, getMessage];
 }
 
 async function sendMedia(props: SendMessage) {

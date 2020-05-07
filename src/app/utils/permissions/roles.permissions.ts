@@ -1,9 +1,9 @@
 import { RolesBuilder } from 'nest-access-control';
 import { UserRole } from 'src/db/entities/user';
 
-export const ROOT_ROLES: RolesBuilder = new RolesBuilder();
+export const ROLES_PERMISSIONS: RolesBuilder = new RolesBuilder();
 
-ROOT_ROLES.grant(UserRole.NOT_REGISTERED)
+ROLES_PERMISSIONS.grant(UserRole.NOT_REGISTERED)
   .readAny('games', [
     'count',
     'game.id',

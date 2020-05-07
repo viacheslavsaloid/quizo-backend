@@ -1,8 +1,8 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
-import { UserDto } from 'src/app/shared/dto';
-import { getHashedPassword, getSalt, comparePasswords } from 'src/app/shared/helpers';
 import { User } from 'src/db/entities/user';
+import { UserDto } from 'src/app/models/user.model';
+import { getSalt, getHashedPassword, comparePasswords } from 'src/app/utils/bcrypt/bcrypt.helper';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

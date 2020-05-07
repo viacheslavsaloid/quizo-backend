@@ -1,6 +1,6 @@
-import { clearChat } from 'src/app/shared/helpers/telegram/chat';
-import { SceneProps } from 'src/app/shared/models/telegram/scene.model';
-import { AppContext } from 'src/app/shared/models/telegram/context.model';
+import { clearChat } from 'src/app/utils/telegram/chat';
+import { SceneProps } from 'src/app/models/telegram/scene.model';
+import { AppContext } from 'src/app/models/telegram/context.model';
 
 async function showHintPreview(ctx: AppContext) {
   await ctx.sendMessage({ ctx, messageNumber: 9, markupNumber: 3 });

@@ -2,8 +2,8 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { DebugLogger } from '../helpers';
 import { AppResponse } from '../models/response.model';
+import { DebugLogger } from '../utils/debug/debug.helper';
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, AppResponse<T>> {

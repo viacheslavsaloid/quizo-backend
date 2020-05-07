@@ -2,8 +2,7 @@ import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { User, UserRole } from 'src/db/entities';
-import { DebugLogger } from '../helpers';
-
+import { DebugLogger } from '../utils/debug/debug.helper';
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private readonly reflector: Reflector) {

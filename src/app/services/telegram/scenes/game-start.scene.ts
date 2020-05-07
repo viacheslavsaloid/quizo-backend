@@ -1,6 +1,6 @@
 import { GameScene } from 'src/db/entities/player/game-scene';
-import { clearChat } from 'src/app/shared/helpers/telegram/chat';
-import { SceneProps } from 'src/app/shared/models/telegram/scene.model';
+import { clearChat } from 'src/app/utils/telegram/chat';
+import { SceneProps } from 'src/app/models/telegram/scene.model';
 
 export async function gameStartSceneEnter(props: SceneProps) {
   await clearChat(props);

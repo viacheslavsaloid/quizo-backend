@@ -2,7 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JWT_CONFIGS, PASSPORT_CONFIGS } from 'src/app/shared/configs';
+import { JWT_CONFIGS, PASSPORT_CONFIGS } from 'src/app/settings/configs';
 import { AUTH_CONTROLLERS } from 'src/app/controllers/auth';
 import { GameModule } from './game.module';
 import { AUTH_REPOSITORIES } from 'src/db/repositories';

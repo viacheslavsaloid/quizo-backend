@@ -1,12 +1,12 @@
 import { Injectable, Logger, HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtPayload, AuthResponse } from 'src/app/shared/models';
-import { UserDto } from 'src/app/shared/dto';
+import { JwtPayload, AuthResponse } from 'src/app/models';
 import { GamesService } from '../game';
 import { UserRole, Player, User } from 'src/db/entities';
 import { UserRepository } from 'src/db/repositories/user';
 import { PlayerRepository } from 'src/db/repositories';
+import { UserDto } from 'src/app/models/user.model';
 
 @Injectable()
 export class AuthService {

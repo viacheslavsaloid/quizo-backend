@@ -6,21 +6,21 @@ import { AuthModule } from 'src/app/modules/auth.module';
 import { DbModule } from 'src/db/db.module';
 import { ImagesModule } from 'src/app/modules/images.module';
 import { GameModule } from 'src/app/modules/game.module';
-import { ROOT_ROUTES } from 'src/app/shared/routes';
-import { CONFIG_CONFIGS } from 'src/app/shared/configs';
-import { ROOT_ROLES } from 'src/app/shared/roles';
+import { ROOT_ROUTES } from 'src/app/routes';
+import { CONFIG_CONFIGS } from 'src/app/settings/configs';
+import { ROLES_PERMISSIONS } from 'src/app/utils/permissions';
 import { HelmetMiddleware } from '@nest-middlewares/helmet';
 import { CorsMiddleware } from '@nest-middlewares/cors';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { ExceptionsFilter } from 'src/app/shared/filters/exceptions.filter';
-import { TransformInterceptor } from 'src/app/shared/interceptor';
+import { ExceptionsFilter } from 'src/app/utils/filters/exceptions.filter';
 import { MorganModule, MorganInterceptor } from 'nest-morgan';
 import { TelegramModule } from './telegram.module';
+import { TransformInterceptor } from '../interceptors';
 
 const ROOT_IMPORTS = [
   ConfigModule.forRoot(CONFIG_CONFIGS),
   RouterModule.forRoutes(ROOT_ROUTES),
-  AccessControlModule.forRoles(ROOT_ROLES),
+  AccessControlModule.forRoles(ROLES_PERMISSIONS),
   MorganModule.forRoot(),
   DbModule,
   GameModule,

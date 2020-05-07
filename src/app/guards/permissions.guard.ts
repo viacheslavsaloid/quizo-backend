@@ -3,8 +3,8 @@ import { Reflector } from '@nestjs/core';
 import { InjectRolesBuilder, RolesBuilder, Role } from 'nest-access-control';
 import { IQueryInfo } from 'accesscontrol';
 import { User } from 'src/db/entities';
-import { DebugLogger } from '../helpers';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { DebugLogger } from '../utils/debug/debug.helper';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

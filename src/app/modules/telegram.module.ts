@@ -5,7 +5,7 @@ import { AuthModule } from './auth.module';
 import { TELEGRAM_REPOSITORIES } from 'src/db/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
-import { TELEGRAM_CONFIGS } from 'src/app/shared/configs';
+import { TELEGRAM_CONFIGS } from 'src/app/settings/configs';
 
 const TELEGRAM_IMPORTS = [TelegrafModule.forRootAsync(TELEGRAM_CONFIGS), TypeOrmModule.forFeature(TELEGRAM_REPOSITORIES), AuthModule, GameModule];
 

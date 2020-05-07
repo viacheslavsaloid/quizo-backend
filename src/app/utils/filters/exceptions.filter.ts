@@ -1,5 +1,5 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
-import { DebugLogger } from '../helpers';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { DebugLogger } from '../debug/debug.helper';
 
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {

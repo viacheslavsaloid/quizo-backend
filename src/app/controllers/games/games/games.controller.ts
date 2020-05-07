@@ -2,12 +2,11 @@ import { Controller, Logger, Post, Body, Param, Get, UseGuards, UseInterceptors 
 import { Crud, CrudController, CrudAuth, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto, CrudOptions } from '@nestjsx/crud';
 import { GamesService } from 'src/app/services/game';
 import { User, Game } from 'src/db/entities';
-import { GetRolesAccessesTo, GetUser } from 'src/app/shared/decorators';
-import { Public } from 'src/app/shared/decorators/public.decorator';
-import { JwtAuthGuard } from 'src/app/shared/guards';
-import { ACGuard } from 'nest-access-control';
-import { AccessControlInterceptor } from 'src/app/shared/interceptor';
-import { PermissionsGuard } from 'src/app/shared/guards/permissions.guard';
+import { GetRolesAccessesTo, GetUser } from 'src/app/utils/decorators';
+import { Public } from 'src/app/utils/decorators/public.decorator';
+import { JwtAuthGuard } from 'src/app/guards';
+import { PermissionsGuard } from 'src/app/guards/permissions.guard';
+import { AccessControlInterceptor } from 'src/app/interceptors';
 
 const CONTROLLER_NAME = 'games';
 

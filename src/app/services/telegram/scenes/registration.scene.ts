@@ -1,5 +1,5 @@
 import { GameScene } from 'src/db/entities/player/game-scene';
-import { SceneProps } from 'src/app/shared/models/telegram/scene.model';
+import { SceneProps } from 'src/app/models/telegram/scene.model';
 
 export async function registrationSceneEnter(props: SceneProps) {
   const { ctx } = props;

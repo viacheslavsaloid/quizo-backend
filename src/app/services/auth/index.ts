@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { JwtStrategy } from 'src/app/shared/strategies';
+import { JwtStrategy } from 'src/app/utils/strategies';
 
 export * from './auth.service';
 

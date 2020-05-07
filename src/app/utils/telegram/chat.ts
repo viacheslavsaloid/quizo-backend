@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { User } from 'src/db/entities';
-import { AppContext } from 'src/app/shared/models/telegram/context.model';
+import { AppContext } from 'src/app/models/telegram/context.model';
 
 interface Props {
   ctx: AppContext;

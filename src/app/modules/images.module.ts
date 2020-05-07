@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 
-import { MULTER_CONFIGS } from 'src/app/shared/configs';
+import { MULTER_CONFIGS } from 'src/app/settings/configs';
 import { IMAGES_CONTROLLERS } from 'src/app/controllers/images';
 
 const IMAGES_IMPORTS = [MulterModule.register(MULTER_CONFIGS)];

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { SendMessage } from 'src/app/shared/models';
 import { Markup } from 'nestjs-telegraf';
-import { TELEGRAM_MESSAGES, TELEGRAM_MARKUPS } from 'src/mockups/telegram';
+import { TELEGRAM_MESSAGES, TELEGRAM_MARKUPS } from 'src/assets/telegram';
+import { TelegramMedia } from 'src/db/entities';
+import { SendMessage } from 'src/app/models';
 
 import * as fs from 'fs';
-import { TelegramMedia } from 'src/db/entities';
 
 async function saveMessageId(msg, props: SendMessage) {
   const { ctx, removeMessage: remove = true } = props;

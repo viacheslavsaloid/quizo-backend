@@ -1,10 +1,10 @@
 import { Controller, Post, Body, ValidationPipe, Logger, Get, UseGuards, Param } from '@nestjs/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { AuthResponse } from 'src/app/shared/models';
-import { JwtAuthGuard } from 'src/app/shared/guards';
-import { GetUser, Swagger } from 'src/app/shared/decorators';
-import { UserDto } from 'src/app/shared/dto';
+import { AuthResponse } from 'src/app/models';
+import { GetUser, Swagger } from 'src/app/utils/decorators';
 import { User } from 'src/db/entities/user';
+import { UserDto } from 'src/app/models/user.model';
+import { JwtAuthGuard } from 'src/app/guards';
 
 @Controller()
 export class AuthController {

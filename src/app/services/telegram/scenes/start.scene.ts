@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { clearChat } from 'src/app/shared/helpers/telegram/chat';
+import { clearChat } from 'src/app/utils/telegram/chat';
 import { GameScene } from 'src/db/entities/player/game-scene';
 import { UserRole } from 'src/db/entities';
-import { SceneProps } from 'src/app/shared/models/telegram/scene.model';
+import { SceneProps } from 'src/app/models/telegram/scene.model';
 
 export async function startSceneEnter(props: SceneProps) {
   const { ctx, service } = props;

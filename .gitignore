@@ -35,5 +35,5 @@ lerna-debug.log*
 
 
 # env
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+/src/environments/dev.env
+/src/environments/prod.env

@@ -4,7 +4,7 @@ import { AppBaseEntity } from '../base';
 import { User } from '../user';
 import { Question } from './../question/question.entity';
 
-@Entity('user')
+@Entity('answers')
 export class Answer extends AppBaseEntity {
   @Column({ type: 'varchar' })
   data: string;

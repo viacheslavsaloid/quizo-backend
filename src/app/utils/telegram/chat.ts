@@ -7,14 +7,17 @@ interface Props {
   repository?: Repository<User>;
   force?: boolean;
   deleteCurrent?: boolean;
+  savePrevious?: number;
 }
 
 export async function clearChat(props: Props) {
-  const { ctx, force, deleteCurrent = true } = props;
+  const { ctx, force, deleteCurrent = true, savePrevious = 0 } = props;
 
   const { messages = [] } = ctx.session;
 
-  const messagesForDelete = messages.filter(msg => force || msg.remove);
+  const messagesForDelete = messages
+    .slice(0, messages.length - savePrevious) // * Deleate all except Save Previous from end
+    .filter(x => x.remove || force);
 
   if (deleteCurrent) {
     await ctx.deleteMessage();

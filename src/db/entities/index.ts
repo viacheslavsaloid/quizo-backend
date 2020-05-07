@@ -5,3 +5,4 @@ export * from './question';
 export * from './round';
 export * from './user';
 export * from './player';
+export * from './telegram-media';

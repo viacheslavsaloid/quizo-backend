@@ -10,10 +10,16 @@ async function saveMessageId(msg, props: SendMessage) {
   const { ctx, removeMessage: remove = true } = props;
   const { messages = [] } = ctx.session;
 
-  const replyMessage = { id: msg.message_id, remove };
   const getMessage = { id: ctx.message.message_id, remove };
+  const replyMessage = { id: msg.message_id, remove };
 
-  ctx.session.messages = [...messages, replyMessage, getMessage];
+  const isGetDublicate = messages.find(x => x.id === getMessage.id);
+  const isReplyDublicate = messages.find(x => x.id === replyMessage.id);
+
+  ctx.session.messages = [...messages];
+
+  isGetDublicate || ctx.session.messages.push(getMessage);
+  isReplyDublicate || ctx.session.messages.push(replyMessage);
 }
 
 async function sendMedia(props) {

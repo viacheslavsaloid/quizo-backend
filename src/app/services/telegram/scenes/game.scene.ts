@@ -35,8 +35,6 @@ async function showHint(props) {
 }
 
 export async function gameSceneEnter(props: SceneProps) {
-  await clearChat(props);
-
   const { ctx } = props;
   const { game, roundOrder = 1, questionOrder = 0 } = ctx.session;
 
@@ -44,6 +42,10 @@ export async function gameSceneEnter(props: SceneProps) {
   const { title: message, correctAnswer, media } = questions[questionOrder];
 
   await ctx.sendMessage({ ctx, message, media });
+
+  const savePrevious = (message ? 1 : 0) + (media ? 1 : 0);
+
+  await clearChat({ ...props, savePrevious });
 
   if (hints && hints.length) {
     startHintTimer(ctx);
@@ -56,7 +58,7 @@ export async function gameSceneEnter(props: SceneProps) {
 export async function gameScene(props: SceneProps) {
   const { ctx } = props;
 
-  const { game, correctAnswer, roundOrder = 1, isHintAvaliable } = ctx.session;
+  const { game, correctAnswer, roundOrder = 1, isHintAvaliable, hintTimeout } = ctx.session;
 
   const correctAnswers = correctAnswer
     .split(' ')
@@ -78,14 +80,20 @@ export async function gameScene(props: SceneProps) {
       ctx.session.roundOrder = nextRound;
       ctx.scene.reenter();
     } else {
-      await clearChat(props);
-
       if (game.bye) {
         await ctx.sendMessage({ ctx, message: game.bye.title });
         await ctx.sendMessage({ ctx, message: game.bye.description });
       }
 
       await ctx.sendMessage({ ctx, messageNumber: 10, markupNumber: 2 });
+
+      const savePrevious = 1 + (game.bye ? (game.bye.title ? 1 : 0) + (game.bye.description ? 1 : 0) : 0);
+
+      await clearChat({ ...props, savePrevious });
+
+      if (hintTimeout) {
+        clearTimeout(hintTimeout);
+      }
 
       ctx.scene.leave();
     }

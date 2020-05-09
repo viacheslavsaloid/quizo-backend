@@ -1,4 +1,4 @@
-export enum GameScene {
+export enum TelegramScene {
   START = 'START',
   REGISTRATION = 'REGISTRATION',
   GAME_START = 'GAME_START',

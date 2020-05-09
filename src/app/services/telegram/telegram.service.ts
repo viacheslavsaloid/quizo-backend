@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectBot, Stage, TelegrafProvider, session, WizardScene } from 'nestjs-telegraf';
 import { AuthService } from '../auth';
-import { GameScene } from 'src/db/entities/player/game-scene';
 import { GamesService } from '../game';
 import { startSceneEnter } from './scenes/start.scene';
 import { registrationSceneEnter, registrationScene } from './scenes/registration.scene';
@@ -10,6 +9,7 @@ import { gameSceneEnter, gameScene } from './scenes/game.scene';
 import { startHandler } from './middlewares/start.middleware';
 import { TelegramMediaRepository } from 'src/db/repositories';
 import { sendMessageHandler } from './middlewares/sendMessage.middleware';
+import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 
 @Injectable()
 export class TelegramService {
@@ -28,27 +28,27 @@ export class TelegramService {
   }
 
   initScenes() {
-    const start = new WizardScene(GameScene.START, ctx => startSceneEnter({ ctx, service: this.authService }));
+    const start = new WizardScene(TelegramScene.START, ctx => startSceneEnter({ ctx, authService: this.authService }));
 
     const registration = new WizardScene(
-      GameScene.REGISTRATION,
+      TelegramScene.REGISTRATION,
       ctx => registrationSceneEnter({ ctx }),
-      ctx => registrationScene({ ctx, service: this.gamesService })
+      ctx => registrationScene({ ctx, gamesService: this.gamesService })
     );
 
     const gameStart = new WizardScene(
-      GameScene.GAME_START,
+      TelegramScene.GAME_START,
       ctx => gameStartSceneEnter({ ctx }),
       ctx => gameStartScene({ ctx })
     );
 
     const game = new WizardScene(
-      GameScene.GAME,
+      TelegramScene.GAME,
       ctx => gameSceneEnter({ ctx }),
       ctx => gameScene({ ctx })
     );
 
-    const stage = new Stage([start, registration, gameStart, game], { default: GameScene.START });
+    const stage = new Stage([start, registration, gameStart, game], { default: TelegramScene.START });
 
     this.bot.use(session());
 

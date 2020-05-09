@@ -27,16 +27,20 @@ async function sendMedia(props) {
 
   const isPhoto = media.file_path.match(/\.(jpg|jpeg|png)$/);
   const isVideo = media.file_path.match(/\.(mp4)$/);
+  const isAudio = media.file_path.match(/\.(mp3)$/);
 
   const mediaReply = media.file_id || {
     source: fs.createReadStream(`media/${media.file_path}`)
   };
 
   const preview = await ctx.reply('Идет загрузка медиа...');
-  const reply = await ((isPhoto && ctx.replyWithPhoto(mediaReply)) || (isVideo && ctx.replyWithVideo(mediaReply)));
+  const reply = await ((isPhoto && ctx.replyWithPhoto(mediaReply)) ||
+    (isVideo && ctx.replyWithVideo(mediaReply)) ||
+    (isAudio && ctx.replyWithAudio(mediaReply)));
+
   ctx.deleteMessage(preview.message_id);
 
-  saveMessageId(reply, props);
+  await saveMessageId(reply, props);
   return reply;
 }
 
@@ -51,33 +55,42 @@ async function sendText(props: SendMessage) {
   return reply;
 }
 
+async function saveMediaOnTelegram(props) {
+  const { media, replyMedia } = props;
+
+  console.log(replyMedia);
+
+  const telegramMedia = new TelegramMedia();
+  telegramMedia.file_path = media;
+
+  telegramMedia.file_id =
+    (replyMedia.video && replyMedia.video.file_id) ||
+    (replyMedia.photo && replyMedia.photo[0].file_id) ||
+    (replyMedia.audio && replyMedia.audio.file_id);
+
+  await telegramMedia.save();
+}
+
 export function sendMessageHandler(props) {
   const { ctx, next, repository } = props;
 
   ctx.sendMessage = async (props: SendMessage) => {
-    const { message, messageNumber, media } = props;
+    const { message, messageNumber, medias = [] } = props;
 
-    const isText = message || messageNumber;
-    const isMedia = media;
+    for (const media of medias) {
+      const mediaExist = await repository.findOne({ file_path: media });
 
-    const mediaExist = await repository.findOne({ file_path: media });
-    props.media = mediaExist || {
-      file_path: media
-    };
+      const modifyMedia = mediaExist || {
+        file_path: media
+      };
 
-    const reply = { media: null, text: null };
+      const replyMedia = await sendMedia({ ctx, media: modifyMedia });
 
-    reply.media = isMedia && (await sendMedia(props));
-    reply.text = isText && (await sendText(props));
-
-    if (reply.media && !mediaExist) {
-      const telegramMedia = new TelegramMedia();
-      telegramMedia.file_path = media;
-      telegramMedia.file_id = (reply.media.video && reply.media.video.file_id) || (reply.media.photo && reply.media.photo[0].file_id);
-      await telegramMedia.save();
+      if (replyMedia && !mediaExist) await saveMediaOnTelegram({ replyMedia, media });
     }
 
-    return reply;
+    const isText = message || messageNumber;
+    isText && (await sendText(props));
   };
 
   next();

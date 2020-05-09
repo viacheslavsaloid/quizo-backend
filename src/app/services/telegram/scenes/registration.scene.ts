@@ -1,5 +1,5 @@
-import { GameScene } from 'src/db/entities/player/game-scene';
 import { SceneProps } from 'src/app/models/telegram/scene.model';
+import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 
 export async function registrationSceneEnter(props: SceneProps) {
   const { ctx } = props;
@@ -8,16 +8,23 @@ export async function registrationSceneEnter(props: SceneProps) {
 }
 
 export async function registrationScene(props: Partial<SceneProps>) {
-  const { ctx, service } = props;
+  const { ctx, gamesService } = props;
 
-  const token = ctx.message.text;
+  const playerId = ctx.message.text;
+  const userId = ctx.session.user.id;
 
-  const verified = await service.verifyToken(token);
+  const verified = await gamesService.isPlayerVerified({ playerId, userId });
 
   if (verified) {
-    const player = await service.useToken({ token, user: ctx.session.user });
-    ctx.session.game = player.game;
-    ctx.scene.enter(GameScene.GAME_START);
+    const player = await gamesService.getPlayer({ playerId, relations: ['game', 'game.rounds', 'game.rounds.questions'] });
+    const gameId = player.game.id;
+
+    const isRegistered = await gamesService.registerToGame({ playerId, userId, gameId });
+
+    if (isRegistered) {
+      ctx.session.game = player.game;
+      ctx.scene.enter(TelegramScene.GAME_START);
+    }
   } else {
     await ctx.sendMessage({ ctx, messageNumber: 3 });
   }

@@ -26,8 +26,6 @@ import { JwtAuthGuard } from 'src/app/guards';
 })
 @Controller('rounds')
 export class RoundsController implements CrudController<Round> {
-  private logger = new Logger('Quest Rounds Controller');
-
   constructor(public service: RoundsService) {}
 
   get base(): CrudController<Round> {
@@ -36,7 +34,7 @@ export class RoundsController implements CrudController<Round> {
 
   @Post(':id/toogle')
   async start(@Param('id') id) {
-    return this.service.setActiveRound(id);
+    return this.service.toogleActiveRound(id);
   }
 
   @Post('sort')

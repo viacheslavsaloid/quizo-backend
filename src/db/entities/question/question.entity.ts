@@ -16,8 +16,8 @@ export class Question extends AppBaseEntity {
   correctAnswer: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', nullable: true })
-  media: string;
+  @Column({ type: 'simple-array', nullable: true })
+  medias: string[];
 
   @OneToMany(
     type => Answer,

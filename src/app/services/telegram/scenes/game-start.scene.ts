@@ -1,6 +1,6 @@
-import { GameScene } from 'src/db/entities/player/game-scene';
 import { clearChat } from 'src/app/utils/telegram/chat';
 import { SceneProps } from 'src/app/models/telegram/scene.model';
+import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 
 export async function gameStartSceneEnter(props: SceneProps) {
   const { ctx } = props;
@@ -24,5 +24,5 @@ export async function gameStartSceneEnter(props: SceneProps) {
 export async function gameStartScene(props: SceneProps) {
   const { ctx } = props;
 
-  ctx.scene.enter(GameScene.GAME);
+  ctx.scene.enter(TelegramScene.GAME);
 }

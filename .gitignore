@@ -37,3 +37,6 @@ lerna-debug.log*
 # env
 /src/environments/dev.env
 /src/environments/prod.env
+
+# media
+/media

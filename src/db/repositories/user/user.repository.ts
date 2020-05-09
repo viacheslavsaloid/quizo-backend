@@ -1,13 +1,11 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { User } from 'src/db/entities/user';
-import { UserDto } from 'src/app/models/user.model';
 import { getSalt, getHashedPassword, comparePasswords } from 'src/app/utils/bcrypt/bcrypt.helper';
+import { UserDto } from 'src/app/dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  logger = new Logger('User Repository');
-
   async signUp(dto: UserDto): Promise<User> {
     try {
       const user = new User();
@@ -24,8 +22,7 @@ export class UserRepository extends Repository<User> {
 
       return user;
     } catch (error) {
-      const returnError = error.code === '23505' ? { code: '1000' } : error;
-      throw new ConflictException(returnError);
+      throw new ConflictException(error);
     }
   }
 
@@ -35,11 +32,12 @@ export class UserRepository extends Repository<User> {
 
       const user = await this.findOne({ name });
 
-      if (!user) {
-        throw new Error('1001');
-      } else if (!(await comparePasswords(password, user.salt, user.password))) {
-        throw new Error('1002');
+      const errorCode = !user ? '1001' : (await comparePasswords(password, user.salt, user.password)) && '1002';
+
+      if (errorCode) {
+        throw new Error(errorCode);
       }
+
       return user;
     } catch (error) {
       throw new ConflictException({

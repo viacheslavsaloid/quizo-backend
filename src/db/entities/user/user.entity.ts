@@ -23,14 +23,6 @@ export class User extends AppBaseEntity {
   @Column({ type: 'simple-array' })
   roles: [UserRole];
 
-  @Column({ type: 'jsonb', default: () => "'[]'" })
-  telegramMessages: [
-    {
-      id: number;
-      remove: boolean;
-    }
-  ];
-
   @OneToMany(
     type => Answer,
     answer => answer.user

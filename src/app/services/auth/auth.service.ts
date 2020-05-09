@@ -1,110 +1,57 @@
-import { Injectable, Logger, HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtPayload, AuthResponse } from 'src/app/models';
-import { GamesService } from '../game';
-import { UserRole, Player, User } from 'src/db/entities';
 import { UserRepository } from 'src/db/repositories/user';
-import { PlayerRepository } from 'src/db/repositories';
-import { UserDto } from 'src/app/models/user.model';
+import { SignUpProps, SignInProps, GenerateAuthTokenProps, IsOwnerProps, GetUserProps } from 'src/app/models/auth';
+import { User } from 'src/db/entities';
 
 @Injectable()
 export class AuthService {
-  private logger = new Logger('AuthService');
-
   constructor(
     @InjectRepository(UserRepository)
-    private repository: UserRepository,
-    private playerRepository: PlayerRepository,
-    private jwtService: JwtService,
-    private gamesService: GamesService
+    private userRepository: UserRepository,
+    private jwtService: JwtService
   ) {}
 
-  public getToken = async (payload: JwtPayload) => ({
-    token: await this.jwtService.sign(payload)
-  });
-
-  public async getTelegramUser(telegramId) {
-    const exist = await this.repository.findOne({ telegramId }, { relations: ['accessGames', 'accessGames.user', 'accessGames.game'] });
-
-    if (exist) {
-      return exist;
-    }
-
-    const user = await this.repository.signUp({ telegramId, roles: [UserRole.PLAYER] });
-    return user;
+  public async signUp(props: SignUpProps): Promise<User> {
+    const { dto, role } = props;
+    return this.userRepository.signUp({ ...dto, roles: [role] });
   }
 
-  public async signUpAsPlayer(dto: UserDto, gameId) {
-    const game = await this.gamesService.findOne({ id: gameId });
+  public async signIn(props: SignInProps): Promise<User> {
+    const { dto } = props;
 
-    if (game.private) {
-      try {
-        this.jwtService.verify(dto.token);
-      } catch (err) {
-        throw new InternalServerErrorException({
-          code: 1005
-        });
-      }
-
-      // const token = await this.usedTokenRepostiory.findOne({ token: dto.token });
-      // if (token) {
-      //   throw new HttpException('Invalid crendentials', HttpStatus.NOT_FOUND);
-      // }
-
-      const decodedToken = this.jwtService.decode(dto.token) as { gameId: string };
-
-      if (decodedToken.gameId !== gameId) {
-        throw new HttpException('Invalid crendentials', HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    const user = await this.repository.signUp({ ...dto, roles: [UserRole.PLAYER] });
-    const { name, id, roles } = await this.gamesService.registerUser({ gameId, user });
-
-    return this.getToken({ name, id, roles });
+    return this.userRepository.signIn(dto);
   }
 
-  public async signUp(dto: UserDto, role: UserRole = UserRole.COMPANY): Promise<User> {
-    return this.repository.signUp({ ...dto, roles: [role] });
+  public async generateAuthToken(props: GenerateAuthTokenProps) {
+    const { payload, fields = [], exceptFields = [] } = props;
+
+    const toToken = fields.length ? {} : { ...payload };
+
+    fields.forEach(field => {
+      toToken[field] = payload[field];
+    });
+
+    exceptFields.forEach(field => {
+      delete toToken[field];
+    });
+
+    const token = await this.jwtService.sign(toToken);
+
+    return {
+      token
+    };
   }
 
-  public async signIn(dto: UserDto): Promise<AuthResponse> {
-    const { name, id, roles } = await this.repository.signIn(dto);
-    return this.getToken({ name, id, roles });
-  }
-
-  public async getUser(params) {
-    return this.repository.findOne(params);
-  }
-
-  public async isOwner(userId, id) {
-    const user = await this.repository.findOne(userId, { relations: ['ownGames'] });
-    const isOwner = user.ownGames.find(x => x.id === id);
+  public async isOwner(props: IsOwnerProps) {
+    const { userId, gameId } = props;
+    const user = await this.userRepository.findOne(userId, { relations: ['ownGames'] });
+    const isOwner = user.ownGames.find(game => game.id === gameId);
     return isOwner;
   }
 
-  public async decodeToken(token) {
-    return this.jwtService.decode(token);
-  }
+  public getUser = (params: GetUserProps) => this.userRepository.findOne(params);
 
-  public async verifyToken(token) {
-    try {
-      return this.jwtService.verify(token);
-    } catch (err) {
-      return false;
-    }
-  }
-
-  public async createPlayer(params) {
-    const user = await this.repository.signUp({ ...params, roles: [UserRole.PLAYER] });
-
-    const player = new Player();
-
-    player.user = user;
-
-    await player.save();
-
-    return player;
-  }
+  public decodeToken = (token: string) => this.jwtService.decode(token);
 }

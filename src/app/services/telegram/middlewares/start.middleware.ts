@@ -1,6 +1,6 @@
-import { GameScene } from 'src/db/entities/player/game-scene';
+import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 
 export function startHandler(ctx) {
   ctx.session = { messages: ctx.session.messages };
-  ctx.scene.enter(GameScene.START);
+  ctx.scene.enter(TelegramScene.START);
 }

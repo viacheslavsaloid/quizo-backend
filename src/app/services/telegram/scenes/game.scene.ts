@@ -38,12 +38,18 @@ export async function gameSceneEnter(props: SceneProps) {
   const { ctx } = props;
   const { game, roundOrder = 1, questionOrder = 0 } = ctx.session;
 
+  console.log(game);
+  if (!game.rounds) return ctx.sendMessage({ ctx, messageNumber: 12, markupNumber: 2 });
+
   const { questions, hints } = game.rounds.find(x => x.order === roundOrder);
-  const { title: message, correctAnswer, media } = questions[questionOrder];
 
-  await ctx.sendMessage({ ctx, message, media });
+  if (!questions.length) return ctx.sendMessage({ ctx, messageNumber: 13, markupNumber: 2 });
 
-  const savePrevious = (message ? 1 : 0) + (media ? 1 : 0);
+  const { title, correctAnswer, medias = [] } = questions[questionOrder];
+
+  await ctx.sendMessage({ ctx, message: title, medias });
+
+  const savePrevious = (title ? 1 : 0) + medias.length;
 
   await clearChat({ ...props, savePrevious });
 

@@ -13,5 +13,6 @@ export interface SendMessage {
   removeMessage?: boolean;
   deletePrevious?: boolean;
   media?: string;
+  medias?: string[];
   repository?: TelegramMediaRepository;
 }

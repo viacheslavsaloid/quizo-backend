@@ -16,7 +16,7 @@ export async function registrationScene(props: Partial<SceneProps>) {
   const verified = await gamesService.isPlayerVerified({ playerId, userId });
 
   if (verified) {
-    const player = await gamesService.getPlayer({ playerId, relations: ['game', 'game.rounds', 'game.rounds.questions'] });
+    const player = await gamesService.getPlayer(playerId, { relations: ['game', 'game.rounds', 'game.rounds.questions'] });
     const gameId = player.game.id;
 
     const isRegistered = await gamesService.registerToGame({ playerId, userId, gameId });

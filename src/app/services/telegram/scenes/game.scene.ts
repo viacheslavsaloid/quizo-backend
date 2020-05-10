@@ -38,7 +38,6 @@ export async function gameSceneEnter(props: SceneProps) {
   const { ctx } = props;
   const { game, roundOrder = 1, questionOrder = 0 } = ctx.session;
 
-  console.log(game);
   if (!game.rounds) return ctx.sendMessage({ ctx, messageNumber: 12, markupNumber: 2 });
 
   const { questions, hints } = game.rounds.find(x => x.order === roundOrder);
@@ -110,6 +109,9 @@ export async function gameScene(props: SceneProps) {
       await ctx.sendMessage({ ctx, messageNumber: 7 });
     }
   } else {
-    await ctx.sendMessage({ ctx, messageNumber: 6 });
+    const wrongs = game.wrongs || [];
+
+    const message = wrongs[Math.floor(Math.random() * wrongs.length)];
+    await ctx.sendMessage({ ctx, message, messageNumber: 6 });
   }
 }

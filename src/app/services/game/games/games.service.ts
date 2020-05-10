@@ -122,5 +122,5 @@ export class GamesService extends TypeOrmCrudService<Game> {
     return count;
   }
 
-  public getPlayer = async (params): Promise<Player> => this.playerRepository.findOne(params);
+  public getPlayer = async (id, options): Promise<Player> => this.playerRepository.findOne(id, options);
 }

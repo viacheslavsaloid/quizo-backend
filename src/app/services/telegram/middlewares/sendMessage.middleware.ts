@@ -50,7 +50,7 @@ async function sendText(props: SendMessage) {
   const replyMessage = message || TELEGRAM_MESSAGES[messageNumber];
   const replyMarkup = removeKeyboard ? Markup.removeKeyboard().extra() : markup || TELEGRAM_MARKUPS[markupNumber];
 
-  const reply = await ctx.reply(replyMessage, replyMarkup);
+  const reply = await ctx.reply(replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
   saveMessageId(reply, props);
   return reply;
 }

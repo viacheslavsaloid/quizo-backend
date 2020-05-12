@@ -16,12 +16,14 @@ import { ExceptionsFilter } from 'src/app/utils/filters/exceptions.filter';
 import { MorganModule, MorganInterceptor } from 'nest-morgan';
 import { TelegramModule } from './telegram.module';
 import { TransformInterceptor } from '../interceptors';
+import { SocketModule } from './socket.module';
 
 const ROOT_IMPORTS = [
   ConfigModule.forRoot(CONFIG_CONFIGS),
   RouterModule.forRoutes(ROOT_ROUTES),
   AccessControlModule.forRoles(ROLES_PERMISSIONS),
   MorganModule.forRoot(),
+  SocketModule,
   DbModule,
   GameModule,
   AuthModule,

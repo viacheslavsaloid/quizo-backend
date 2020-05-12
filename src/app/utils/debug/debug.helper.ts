@@ -8,24 +8,29 @@ export const DebugLogger = (o: any, ...out: any[]) => {
       color: 'green'
     },
     guard: {
-      indent: 4,
+      indent: 2,
       symbol: '[G:]',
       color: 'magenta'
     },
     interceptor: {
-      indent: 6,
+      indent: 2,
       symbol: '[I:]',
       color: 'yellow'
     },
     pipe: {
-      indent: 8,
+      indent: 2,
       symbol: '[P:]',
       color: 'cyan'
     },
     filter: {
-      indent: 10,
+      indent: 2,
       symbol: '[E:]',
       color: 'red'
+    },
+    service: {
+      indent: 2,
+      symbol: '[S:]',
+      color: 'blue'
     }
   };
 
@@ -46,9 +51,11 @@ export const DebugLogger = (o: any, ...out: any[]) => {
     typeFormat = formats.pipe;
   } else if ('catch' in o) {
     typeFormat = formats.filter;
+  } else if ('server' in o) {
+    typeFormat = formats.service;
   }
 
-  prefix = '>'.repeat(typeFormat.indent) + ' ' + typeFormat.symbol + o.constructor.name + ' ';
+  prefix = '>'.repeat(typeFormat.indent) + ' ' + typeFormat.symbol + ' ' + o.constructor.name + ' ';
 
   console.log(clc[typeFormat.color](prefix) + out.join(''));
 };

@@ -6,7 +6,7 @@ import { Game } from '../game';
 
 @Entity('players')
 export class Player extends AppBaseEntity {
-  @Column({ type: 'boolean', default: true })
+  @Column('boolean', { default: true })
   access: boolean;
 
   @ManyToOne(

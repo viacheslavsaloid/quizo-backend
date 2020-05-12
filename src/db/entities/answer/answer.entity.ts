@@ -6,7 +6,7 @@ import { Question } from './../question/question.entity';
 
 @Entity('answers')
 export class Answer extends AppBaseEntity {
-  @Column({ type: 'varchar' })
+  @Column('text')
   data: string;
 
   @ManyToOne(

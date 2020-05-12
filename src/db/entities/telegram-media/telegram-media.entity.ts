@@ -4,9 +4,9 @@ import { AppBaseEntity } from '../base';
 
 @Entity('telegram-media')
 export class TelegramMedia extends AppBaseEntity {
-  @Column({ type: 'varchar' })
+  @Column('text')
   file_path: string;
 
-  @Column({ type: 'varchar' })
+  @Column('text')
   file_id: string;
 }

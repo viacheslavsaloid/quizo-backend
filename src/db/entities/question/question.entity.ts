@@ -8,15 +8,15 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity('questions')
 export class Question extends AppBaseEntity {
   @ApiProperty()
-  @Column({ type: 'varchar' })
+  @Column('text')
   title: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', nullable: true })
+  @Column('text', { nullable: true })
   correctAnswer: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'simple-array', nullable: true })
+  @Column('text', { array: true, nullable: true })
   medias: string[];
 
   @OneToMany(

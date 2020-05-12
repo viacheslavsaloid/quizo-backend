@@ -90,7 +90,7 @@ export class GamesService extends TypeOrmCrudService<Game> {
 
       if (game.private) {
         const isPlayerVerified = await this.isPlayerVerified({ playerId, userId });
-        if (!isPlayerVerified) throw new Error();
+        if (!isPlayerVerified) throw new Error('1005');
       }
 
       const token = game.private ? playerId : (await this.generateGameToken({ gameId })).token;

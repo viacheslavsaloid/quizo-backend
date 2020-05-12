@@ -30,7 +30,7 @@ async function sendMedia(props) {
   const isAudio = media.file_path.match(/\.(mp3)$/);
 
   const mediaReply = media.file_id || {
-    source: fs.createReadStream(`media/${media.file_path}`)
+    source: `media/${media.file_path}`
   };
 
   const preview = await ctx.reply('Идет загрузка медиа...');
@@ -57,8 +57,6 @@ async function sendText(props: SendMessage) {
 
 async function saveMediaOnTelegram(props) {
   const { media, replyMedia } = props;
-
-  console.log(replyMedia);
 
   const telegramMedia = new TelegramMedia();
   telegramMedia.file_path = media;

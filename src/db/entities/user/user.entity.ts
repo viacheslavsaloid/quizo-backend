@@ -8,19 +8,19 @@ import { Player } from '../player';
 
 @Entity('users')
 export class User extends AppBaseEntity {
-  @Column({ unique: true, nullable: true })
+  @Column('text', { unique: true, nullable: true })
   telegramId: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column('text', { unique: true, nullable: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   salt: string;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   password: string;
 
-  @Column({ type: 'simple-array' })
+  @Column('text', { array: true })
   roles: [UserRole];
 
   @OneToMany(

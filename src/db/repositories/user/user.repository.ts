@@ -32,7 +32,7 @@ export class UserRepository extends Repository<User> {
 
       const user = await this.findOne({ name });
 
-      const errorCode = !user ? '1001' : (await comparePasswords(password, user.salt, user.password)) && '1002';
+      const errorCode = !user ? '1001' : !(await comparePasswords(password, user.salt, user.password)) && '1002';
 
       if (errorCode) {
         throw new Error(errorCode);

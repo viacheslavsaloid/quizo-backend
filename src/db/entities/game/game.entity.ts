@@ -9,7 +9,7 @@ import { Player } from '../player';
 @Entity('games')
 export class Game extends AppBaseEntity {
   @ApiProperty()
-  @Column({ type: 'varchar' })
+  @Column('text', { nullable: true })
   name: string;
 
   @ApiProperty({ enum: GameType })
@@ -17,38 +17,38 @@ export class Game extends AppBaseEntity {
   type: GameType;
 
   @ApiProperty({ type: 'boolean' })
-  @Column()
+  @Column('boolean')
   private: boolean;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', nullable: true })
+  @Column('text', { nullable: true })
   activeRound: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', nullable: true })
+  @Column('text', { nullable: true })
   logo: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', nullable: true })
+  @Column('text', { nullable: true })
   background: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'varchar', nullable: true })
+  @Column('text', { nullable: true })
   preview: string;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'simple-array', nullable: true })
+  @Column('text', { array: true, nullable: true })
   wrongs: string[];
 
   @ApiProperty({ required: false })
-  @Column({ type: 'simple-json', nullable: true })
+  @Column('json', { nullable: true })
   hi: {
     title: string;
     description: string;
   };
 
   @ApiProperty({ required: false })
-  @Column({ type: 'simple-json', nullable: true })
+  @Column('json', { nullable: true })
   bye: {
     title: string;
     description: string;

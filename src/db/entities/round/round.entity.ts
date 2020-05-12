@@ -8,15 +8,15 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity('rounds')
 export class Round extends AppBaseEntity {
   @ApiProperty()
-  @Column({ type: 'varchar' })
+  @Column('text')
   name: string;
 
   @ApiProperty()
-  @Column({ type: 'integer' })
+  @Column('int')
   order: number;
 
   @ApiProperty({ required: false })
-  @Column({ type: 'simple-array', nullable: true })
+  @Column('text', { array: true, nullable: true })
   hints: string[];
 
   @OneToMany(

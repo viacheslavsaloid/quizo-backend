@@ -102,7 +102,7 @@ export async function gameScene(props: SceneProps) {
 
       ctx.scene.leave();
     }
-  } else if (ctx.message.text === 'Подсказка') {
+  } else if (ctx.message.text.toLowerCase() === 'подсказка') {
     if (isHintAvaliable) {
       await showHint(props);
     } else {

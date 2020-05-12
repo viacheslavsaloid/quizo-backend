@@ -15,7 +15,6 @@ export class AuthController {
   async signUpAsCompany(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
     const payload = await this.authService.signUp({ dto, role: UserRole.COMPANY });
     const token = await this.authService.generateAuthToken({ payload, fields: ['id', 'roles', 'name'] });
-    console.log(token);
     return token;
   }
 

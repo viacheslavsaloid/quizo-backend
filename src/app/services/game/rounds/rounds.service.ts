@@ -4,17 +4,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Round } from 'src/db/entities/round';
 import { GamesService } from '../games/games.service';
+import { SocketService } from '../../socket/socket.service';
 
 @Injectable()
 export class RoundsService extends TypeOrmCrudService<Round> {
-  constructor(@InjectRepository(Round) private roundRepository: Repository<Round>, private gamesService: GamesService) {
+  constructor(
+    @InjectRepository(Round) private roundRepository: Repository<Round>,
+    private gamesService: GamesService,
+    private socketService: SocketService
+  ) {
     super(roundRepository);
   }
 
   public async toogleActiveRound(roundId) {
     const round = await this.roundRepository.findOne(roundId, { relations: ['game'] });
     const gameId = round.game.id;
-    return this.gamesService.toogleActiveRound({ roundId, gameId });
+    const { activeRound } = await this.gamesService.toogleActiveRound({ roundId, gameId });
+    this.socketService.emit('round_toogled', activeRound);
+
+    return { activeRound };
   }
 
   public async sort(rounds) {

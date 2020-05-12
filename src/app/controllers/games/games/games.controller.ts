@@ -1,4 +1,4 @@
-import { Controller, Logger, Post, Body, Param, Get, UseGuards, UseInterceptors, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, UseGuards, UseInterceptors, Patch } from '@nestjs/common';
 import { Crud, CrudController, CrudAuth, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto, CrudOptions } from '@nestjsx/crud';
 import { GamesService } from 'src/app/services/game';
 import { User, Game } from 'src/db/entities';
@@ -61,8 +61,6 @@ const GamesCrudOptions: CrudOptions = {
 @CrudAuth(GamesAuth)
 @Controller(CONTROLLER_NAME)
 export class GamesController implements CrudController<Game> {
-  logger = new Logger('quests controller');
-
   constructor(public service: GamesService) {}
   get base(): CrudController<Game> {
     return this;
@@ -117,10 +115,18 @@ export class GamesController implements CrudController<Game> {
     return this.base.deleteOneBase(req);
   }
 
+  @Post(':id/signup')
+  signUp(@Param('id') gameId, @GetUser() user, @Body() body) {
+    const { token: playerId } = body;
+    const { id: userId } = user;
+    return this.service.registerToGame({ gameId, userId, playerId });
+  }
+
   @HasUserAccessTo('update')
   @Patch(':id/access')
-  toogleAccess(@Body() player) {
-    return this.service.toogleAccess({ playerId: player.id });
+  toogleAccess(@Body() body) {
+    const { id: playerId } = body;
+    return this.service.toogleAccess({ playerId });
   }
 
   @HasUserAccessTo('create')
@@ -133,7 +139,8 @@ export class GamesController implements CrudController<Game> {
   @HasUserAccessTo('read')
   @Get(':id/access')
   hasAccess(@Param('id') gameId, @GetUser() user) {
-    return this.service.hasAccess({ userId: user.id, gameId });
+    const { id: userId } = user;
+    return this.service.hasAccess({ userId, gameId });
   }
 
   @Public()

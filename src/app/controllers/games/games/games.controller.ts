@@ -32,26 +32,10 @@ const GamesCrudOptions: CrudOptions = {
   },
   query: {
     join: {
-      rounds: {
-        eager: true
-      },
-      players: {
-        eager: true
-      },
       owner: {
         eager: true
-      },
-      ['players.user']: {
-        eager: true,
-        allow: ['id', 'name']
       }
-    },
-    sort: [
-      {
-        field: 'rounds.order',
-        order: 'ASC'
-      }
-    ]
+    }
   }
 };
 
@@ -76,13 +60,8 @@ export class GamesController implements CrudController<Game> {
   @Public()
   @HasUserAccessTo('read')
   @Override()
-  async getOne(@ParsedRequest() req: CrudRequest) {
-    const game = await this.base.getOneBase(req);
-    const count = await this.service.getCount();
-    return {
-      game,
-      count
-    };
+  getOne(@ParsedRequest() req: CrudRequest) {
+    return this.base.getOneBase(req);
   }
 
   @HasUserAccessTo('create')

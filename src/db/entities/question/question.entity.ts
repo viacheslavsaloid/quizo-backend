@@ -16,7 +16,7 @@ export class Question extends AppBaseEntity {
   correctAnswer: string;
 
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true })
+  @Column('text', { array: true, nullable: true, default: '{}' })
   medias: string[];
 
   @OneToMany(
@@ -28,7 +28,7 @@ export class Question extends AppBaseEntity {
   @ManyToOne(
     type => Round,
     round => round.questions,
-    { cascade: true }
+    { onDelete: 'CASCADE' }
   )
   round: Round;
 }

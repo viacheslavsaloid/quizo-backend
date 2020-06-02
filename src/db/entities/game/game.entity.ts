@@ -37,7 +37,7 @@ export class Game extends AppBaseEntity {
   preview: string;
 
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true })
+  @Column('text', { array: true, nullable: true, default: '{}' })
   wrongs: string[];
 
   @ApiProperty({ required: false })

@@ -16,6 +16,10 @@ export class RoundsService extends TypeOrmCrudService<Round> {
     super(roundRepository);
   }
 
+  public get() {
+    return this.roundRepository.find();
+  }
+
   public async toogleActiveRound(roundId) {
     const round = await this.roundRepository.findOne(roundId, { relations: ['game'] });
     const gameId = round.game.id;

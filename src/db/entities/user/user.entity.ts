@@ -20,7 +20,7 @@ export class User extends AppBaseEntity {
   @Column('text', { nullable: true })
   password: string;
 
-  @Column('text', { array: true })
+  @Column('text', { array: true, default: '{}' })
   roles: [UserRole];
 
   @OneToMany(

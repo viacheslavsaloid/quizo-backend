@@ -44,8 +44,8 @@ export class TelegramService {
 
     const game = new WizardScene(
       TelegramScene.GAME,
-      ctx => gameSceneEnter({ ctx }),
-      ctx => gameScene({ ctx })
+      ctx => gameSceneEnter({ ctx, gamesService: this.gamesService }),
+      ctx => gameScene({ ctx, gamesService: this.gamesService })
     );
 
     const stage = new Stage([start, registration, gameStart, game], { default: TelegramScene.START });

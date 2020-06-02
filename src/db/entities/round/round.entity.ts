@@ -16,7 +16,7 @@ export class Round extends AppBaseEntity {
   order: number;
 
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true })
+  @Column('text', { array: true, nullable: true, default: '{}' })
   hints: string[];
 
   @OneToMany(

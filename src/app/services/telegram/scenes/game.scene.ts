@@ -35,7 +35,9 @@ async function showHint(props) {
 }
 
 export async function gameSceneEnter(props: SceneProps) {
-  const { ctx } = props;
+  const { ctx, gamesService } = props;
+  ctx.session.game = await gamesService.findOne(ctx.session.game.id, { relations: ['rounds', 'rounds.questions'] });
+
   const { game, roundOrder = 1, questionOrder = 0 } = ctx.session;
 
   if (!game.rounds) return ctx.sendMessage({ ctx, messageNumber: 12, markupNumber: 2 });
@@ -61,8 +63,9 @@ export async function gameSceneEnter(props: SceneProps) {
 }
 
 export async function gameScene(props: SceneProps) {
-  const { ctx } = props;
+  const { ctx, gamesService } = props;
 
+  ctx.session.game = await gamesService.findOne(ctx.session.game.id, { relations: ['rounds', 'rounds.questions'] });
   const { game, correctAnswer, roundOrder = 1, isHintAvaliable, hintTimeout } = ctx.session;
 
   const correctAnswers = correctAnswer
@@ -83,6 +86,7 @@ export async function gameScene(props: SceneProps) {
 
     if (nextRound <= game.rounds.length) {
       ctx.session.roundOrder = nextRound;
+      ctx.session.hintOrder = 0;
       ctx.scene.reenter();
     } else {
       if (game.bye) {

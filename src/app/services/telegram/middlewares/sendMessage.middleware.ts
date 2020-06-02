@@ -4,8 +4,6 @@ import { TELEGRAM_MESSAGES, TELEGRAM_MARKUPS } from 'src/assets/telegram';
 import { TelegramMedia } from 'src/db/entities';
 import { SendMessage } from 'src/app/models';
 
-import * as fs from 'fs';
-
 async function saveMessageId(msg, props: SendMessage) {
   const { ctx, removeMessage: remove = true } = props;
   const { messages = [] } = ctx.session;

@@ -10,6 +10,7 @@ import { startHandler } from './middlewares/start.middleware';
 import { TelegramMediaRepository } from 'src/db/repositories';
 import { sendMessageHandler } from './middlewares/sendMessage.middleware';
 import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
+import { UserRole } from 'src/db/entities';
 
 @Injectable()
 export class TelegramService {
@@ -24,6 +25,26 @@ export class TelegramService {
   }
 
   initMiddlewares() {
+    this.bot.use(session());
+
+    this.bot.use(async (ctx, next) => {
+      const { id: telegramId, first_name, last_name, username } = ctx.from;
+      const name = username || `${first_name} ${last_name}`;
+
+      let user = await this.authService.getUser({ telegramId });
+
+      if (!user) {
+        user = await this.authService.signUp({ dto: { telegramId, name }, role: UserRole.PLAYER });
+      }
+
+      ctx.session.user = user;
+      ctx.session.messages = ctx.session.user.messages;
+      console.log('pre', ctx.session.messages);
+      await next();
+      console.log('post', ctx.session.messages);
+      ctx.session.user.messages = ctx.session.messages;
+      ctx.session.user.save();
+    });
     this.bot.use((ctx, next) => sendMessageHandler({ ctx, next, repository: this.telegramMediaRepository }));
   }
 
@@ -50,9 +71,7 @@ export class TelegramService {
 
     const stage = new Stage([start, registration, gameStart, game], { default: TelegramScene.START });
 
-    this.bot.use(session());
-
-    stage.hears('/start', startHandler);
+    // stage.hears('/start', startHandler);
 
     this.bot.use(stage.middleware());
   }

@@ -7,16 +7,16 @@ import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 export async function startSceneEnter(props: SceneProps) {
   const { ctx, authService } = props;
 
-  const { id: telegramId, first_name, last_name, username } = ctx.from;
-  const name = username || `${first_name} ${last_name}`;
+  // const { id: telegramId, first_name, last_name, username } = ctx.from;
+  // const name = username || `${first_name} ${last_name}`;
 
-  let user = await authService.getUser({ telegramId });
+  // let user = await authService.getUser({ telegramId });
 
-  if (!user) {
-    user = await authService.signUp({ dto: { telegramId, name }, role: UserRole.PLAYER });
-  }
+  // if (!user) {
+  //   user = await authService.signUp({ dto: { telegramId, name }, role: UserRole.PLAYER });
+  // }
 
-  ctx.session.user = user;
+  // ctx.session.user = user;
 
   await clearChat({ ...props, deleteCurrent: false });
 

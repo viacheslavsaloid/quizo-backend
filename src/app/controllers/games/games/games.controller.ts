@@ -32,10 +32,26 @@ const GamesCrudOptions: CrudOptions = {
   },
   query: {
     join: {
+      rounds: {
+        eager: true
+      },
+      players: {
+        eager: true
+      },
       owner: {
         eager: true
+      },
+      ['players.user']: {
+        eager: true,
+        allow: ['id', 'name']
       }
-    }
+    },
+    sort: [
+      {
+        field: 'rounds.order',
+        order: 'ASC'
+      }
+    ]
   }
 };
 

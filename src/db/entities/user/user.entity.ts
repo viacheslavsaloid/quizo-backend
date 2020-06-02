@@ -23,6 +23,9 @@ export class User extends AppBaseEntity {
   @Column('text', { array: true, default: '{}' })
   roles: [UserRole];
 
+  @Column('text', { array: true, default: '{}' })
+  messages: [];
+
   @OneToMany(
     type => Answer,
     answer => answer.user

@@ -69,7 +69,7 @@ export class Game extends AppBaseEntity {
   @ManyToOne(
     type => User,
     user => user.ownGames,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   owner: User;
 }

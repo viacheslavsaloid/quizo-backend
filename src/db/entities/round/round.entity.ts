@@ -28,7 +28,7 @@ export class Round extends AppBaseEntity {
   @ManyToOne(
     type => Game,
     game => game.rounds,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   game: Game;
 }

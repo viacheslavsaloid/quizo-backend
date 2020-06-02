@@ -12,14 +12,14 @@ export class Player extends AppBaseEntity {
   @ManyToOne(
     type => User,
     user => user.accessGames,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   user: User;
 
   @ManyToOne(
     type => Game,
     game => game.players,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   game: Game;
 }

@@ -41,7 +41,7 @@ export class RoundsController implements CrudController<Round> {
 
   @Override()
   async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Round) {
-    const count = await this.service.getCount(req);
+    const count = await this.service.getCount({ game: dto.game });
     return this.service.createOne(req, { ...dto, order: count + 1 });
   }
 
@@ -51,7 +51,7 @@ export class RoundsController implements CrudController<Round> {
   }
 
   @Post('sort')
-  async sort(@Body() data: { rounds: Round[] }) {
-    return this.service.sort(data.rounds);
+  async sort(@Body() { data }) {
+    return this.service.sort(data);
   }
 }

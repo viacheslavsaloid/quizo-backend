@@ -1,5 +1,5 @@
 import { Controller, UseGuards, Get, Query, Post, Body } from '@nestjs/common';
-import { Crud, CrudController } from '@nestjsx/crud';
+import { Crud, CrudController, Override, ParsedRequest, ParsedBody, CrudRequest } from '@nestjsx/crud';
 import { QuestionsService } from 'src/app/services/game';
 import { Question } from 'src/db/entities/question';
 import { JwtAuthGuard } from 'src/app/guards';
@@ -35,8 +35,14 @@ export class QuestionsController implements CrudController<Question> {
     return this.service.getCount(query);
   }
 
+  @Override()
+  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Question) {
+    const count = await this.service.getCount({ round: dto.round });
+    return this.service.createOne(req, { ...dto, order: count + 1 });
+  }
+
   @Post('sort')
-  async sort(@Body() data: { questions: Question[] }) {
-    return this.service.sort(data.questions);
+  async sort(@Body() { data }) {
+    return this.service.sort(data);
   }
 }

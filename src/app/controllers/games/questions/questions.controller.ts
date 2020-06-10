@@ -37,8 +37,8 @@ export class QuestionsController implements CrudController<Question> {
 
   @Override()
   async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Question) {
-    const count = await this.service.getCount({ round: dto.round });
-    return this.service.createOne(req, { ...dto, order: count + 1 });
+    const order = await this.service.getCount({ round: dto.round });
+    return this.service.createOne(req, { ...dto, order });
   }
 
   @Post('sort')

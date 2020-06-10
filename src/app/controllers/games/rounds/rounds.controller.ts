@@ -41,8 +41,8 @@ export class RoundsController implements CrudController<Round> {
 
   @Override()
   async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Round) {
-    const count = await this.service.getCount({ game: dto.game });
-    return this.service.createOne(req, { ...dto, order: count + 1 });
+    const order = await this.service.getCount({ game: dto.game });
+    return this.service.createOne(req, { ...dto, order });
   }
 
   @Post(':id/toogle')

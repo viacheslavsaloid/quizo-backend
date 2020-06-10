@@ -16,8 +16,16 @@ export class Round extends AppBaseEntity {
   order: number;
 
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true })
+  @Column('text', { array: true, default: {} })
   hints: string[];
+
+  @ApiProperty({ required: false })
+  @Column('text', { default: '' })
+  correctAnswer: string;
+
+  @ApiProperty({ type: 'boolean' })
+  @Column('boolean', { default: true })
+  active: boolean;
 
   @OneToMany(
     type => Question,

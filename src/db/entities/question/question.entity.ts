@@ -12,15 +12,15 @@ export class Question extends AppBaseEntity {
   title: string;
 
   @ApiProperty({ required: false })
-  @Column('text', { nullable: true })
+  @Column('text', { default: '' })
   correctAnswer: string;
 
   @ApiProperty()
-  @Column('int', { nullable: true })
+  @Column('int', { default: 0 })
   order: number;
 
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true })
+  @Column('text', { array: true, default: {} })
   medias: string[];
 
   @OneToMany(

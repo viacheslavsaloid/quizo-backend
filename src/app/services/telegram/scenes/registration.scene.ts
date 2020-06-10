@@ -1,31 +1,13 @@
-import { SceneProps } from 'src/app/models/telegram/scene.model';
 import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 
-export async function registrationSceneEnter(props: SceneProps) {
-  const { ctx } = props;
-  await ctx.sendMessage({ ctx, messageNumber: 1 });
-  return ctx.wizard.next();
-}
+export async function registrationScene(ctx) {
+  console.log(TelegramScene.REGISTRATION);
 
-export async function registrationScene(props: Partial<SceneProps>) {
-  const { ctx, gamesService } = props;
+  ctx.state.user.telegram.scene = TelegramScene.REGISTRATION;
 
-  const playerId = ctx.message.text;
-  const userId = ctx.session.user.id;
+  await ctx.state.sendMessage({ ctx, messageNumber: 0 });
 
-  const verified = await gamesService.isPlayerVerified({ playerId, userId });
+  await ctx.scene.enter(TelegramScene.REGISTRATION_HANDLER, null, true); // name, defaultState, silence -> if true, does`t call enter method in scene
 
-  if (verified) {
-    const player = await gamesService.getPlayer(playerId, { relations: ['game', 'game.rounds', 'game.rounds.questions'] });
-    const gameId = player.game.id;
-
-    const isRegistered = await gamesService.registerToGame({ playerId, userId, gameId });
-
-    if (isRegistered) {
-      ctx.session.game = player.game;
-      ctx.scene.enter(TelegramScene.GAME_START);
-    }
-  } else {
-    await ctx.sendMessage({ ctx, messageNumber: 3 });
-  }
+  ctx.state.user.telegram.scene = TelegramScene.REGISTRATION_HANDLER; // we have to change current scene here, because we didn`t enter in
 }

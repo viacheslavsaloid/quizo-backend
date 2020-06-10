@@ -12,14 +12,14 @@ export class Answer extends AppBaseEntity {
   @ManyToOne(
     type => Question,
     question => question.answers,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   question: Question;
 
   @ManyToOne(
     type => User,
     user => user.answers,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   user: User;
 }

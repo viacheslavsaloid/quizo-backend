@@ -12,11 +12,15 @@ export class Question extends AppBaseEntity {
   title: string;
 
   @ApiProperty({ required: false })
-  @Column('text', { nullable: true })
+  @Column('text', { default: '' })
   correctAnswer: string;
 
+  @ApiProperty()
+  @Column('int', { default: 0 })
+  order: number;
+
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true, default: '{}' })
+  @Column('text', { array: true, default: {} })
   medias: string[];
 
   @OneToMany(
@@ -28,7 +32,7 @@ export class Question extends AppBaseEntity {
   @ManyToOne(
     type => Round,
     round => round.questions,
-    { onDelete: 'CASCADE' }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   round: Round;
 }

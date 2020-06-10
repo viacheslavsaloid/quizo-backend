@@ -1,9 +1,9 @@
-import { Controller, UseGuards, Logger, Post, Param, Body } from '@nestjs/common';
-import { Crud, CrudController, Override, ParsedRequest, CrudRequest } from '@nestjsx/crud';
+import { Controller, UseGuards, Logger, Post, Param, Body, Get, Query } from '@nestjs/common';
+import { Crud, CrudController, Override, ParsedRequest, ParsedBody, CrudRequest } from '@nestjsx/crud';
 import { RoundsService } from 'src/app/services/game';
 import { Round } from 'src/db/entities/round';
 import { JwtAuthGuard } from 'src/app/guards';
-import { DebugLogger } from 'src/app/utils/debug';
+import { Public } from 'src/app/utils/decorators';
 
 @UseGuards(JwtAuthGuard)
 @Crud({
@@ -19,7 +19,7 @@ import { DebugLogger } from 'src/app/utils/debug';
   },
   query: {
     join: {
-      questions: {
+      game: {
         eager: true
       }
     }
@@ -43,13 +43,25 @@ export class RoundsController implements CrudController<Round> {
     return res;
   }
 
+  @Public()
+  @Get('count')
+  getCount(@Query() query) {
+    return this.service.getCount(query);
+  }
+
+  @Override()
+  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Round) {
+    const order = await this.service.getCount({ game: dto.game });
+    return this.service.createOne(req, { ...dto, order });
+  }
+
   @Post(':id/toogle')
   async start(@Param('id') id) {
     return this.service.toogleActiveRound(id);
   }
 
   @Post('sort')
-  async sort(@Body() data: { rounds: Round[] }) {
-    return this.service.sort(data.rounds);
+  async sort(@Body() { data }) {
+    return this.service.sort(data);
   }
 }

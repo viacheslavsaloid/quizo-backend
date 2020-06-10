@@ -33,16 +33,6 @@ export class RoundsController implements CrudController<Round> {
     return this;
   }
 
-  @Override()
-  async deleteOne(@ParsedRequest() req: CrudRequest) {
-    const res = await this.base.deleteOneBase(req);
-    const rounds = await this.service.get();
-
-    await this.service.sort(rounds);
-
-    return res;
-  }
-
   @Public()
   @Get('count')
   getCount(@Query() query) {

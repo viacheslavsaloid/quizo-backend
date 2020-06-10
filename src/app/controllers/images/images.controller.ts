@@ -1,5 +1,5 @@
-import { Controller, Post, Logger, UseInterceptors, UploadedFile, Get, Param, Res } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Post, Logger, UseInterceptors, Get, Param, Res, UploadedFiles } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import path = require('path');
 
@@ -12,9 +12,9 @@ export class ImagesController {
   logger = new Logger('Images Controller');
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  postImage(@UploadedFile() file): Media {
-    return { path: file.filename };
+  @UseInterceptors(FilesInterceptor('files'))
+  postImage(@UploadedFiles() files): Media {
+    return files.map(file => file.filename);
   }
 
   @Get('/:id')

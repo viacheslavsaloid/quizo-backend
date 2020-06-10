@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Get, UseGuards, UseInterceptors, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, UseGuards, UseInterceptors, Patch, Query } from '@nestjs/common';
 import { Crud, CrudController, CrudAuth, Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto, CrudOptions } from '@nestjsx/crud';
 import { GamesService } from 'src/app/services/game';
 import { User, Game } from 'src/db/entities';
@@ -51,6 +51,12 @@ export class GamesController implements CrudController<Game> {
   }
 
   @Public()
+  @Get('count')
+  getCount(@Query() query) {
+    return this.service.getCount(query);
+  }
+
+  @Public()
   @HasUserAccessTo('read')
   @Override()
   getMany(@ParsedRequest() req: CrudRequest) {
@@ -78,13 +84,13 @@ export class GamesController implements CrudController<Game> {
 
   @HasUserAccessTo('update')
   @Override()
-  updateOneBase(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
+  updateOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
     return this.base.updateOneBase(req, dto);
   }
 
   @HasUserAccessTo('update')
   @Override()
-  replaceOneBase(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
+  replaceOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
     return this.base.replaceOneBase(req, dto);
   }
 
@@ -120,11 +126,5 @@ export class GamesController implements CrudController<Game> {
   hasAccess(@Param('id') gameId, @GetUser() user) {
     const { id: userId } = user;
     return this.service.hasAccess({ userId, gameId });
-  }
-
-  @Public()
-  @Get('count')
-  getCount() {
-    return this.service.getCount();
   }
 }

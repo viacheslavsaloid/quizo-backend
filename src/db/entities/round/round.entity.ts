@@ -16,8 +16,16 @@ export class Round extends AppBaseEntity {
   order: number;
 
   @ApiProperty({ required: false })
-  @Column('text', { array: true, nullable: true, default: '{}' })
+  @Column('text', { array: true, default: {} })
   hints: string[];
+
+  @ApiProperty({ required: false })
+  @Column('text', { default: '' })
+  correctAnswer: string;
+
+  @ApiProperty({ type: 'boolean' })
+  @Column('boolean', { default: true })
+  active: boolean;
 
   @OneToMany(
     type => Question,
@@ -28,7 +36,7 @@ export class Round extends AppBaseEntity {
   @ManyToOne(
     type => Game,
     game => game.rounds,
-    { cascade: true }
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
   game: Game;
 }

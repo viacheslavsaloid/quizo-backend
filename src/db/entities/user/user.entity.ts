@@ -5,6 +5,7 @@ import { UserRole } from './user-role.enum';
 import { Game } from '../game';
 import { Answer } from '../answer';
 import { Player } from '../player';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('users')
 export class User extends AppBaseEntity {
@@ -22,6 +23,13 @@ export class User extends AppBaseEntity {
 
   @Column('text', { array: true, default: '{}' })
   roles: [UserRole];
+
+  @ApiProperty({ required: false })
+  @Column('json', { default: {} })
+  telegram: {
+    id: string;
+    messages: string[];
+  };
 
   @OneToMany(
     type => Answer,

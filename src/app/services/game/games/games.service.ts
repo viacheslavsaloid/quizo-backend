@@ -117,8 +117,8 @@ export class GamesService extends TypeOrmCrudService<Game> {
     }
   }
 
-  public async getCount(): Promise<number> {
-    const [_, count] = await this.gameRepository.findAndCount();
+  public async getCount(options): Promise<number> {
+    const [_, count] = await this.gameRepository.findAndCount(options);
     return count;
   }
 

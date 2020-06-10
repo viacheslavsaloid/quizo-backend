@@ -1,121 +1,36 @@
-import { clearChat } from 'src/app/utils/telegram/chat';
-import { SceneProps } from 'src/app/models/telegram/scene.model';
-import { AppContext } from 'src/app/models/telegram/context.model';
+import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
 
-async function showHintPreview(ctx: AppContext) {
-  await ctx.sendMessage({ ctx, messageNumber: 9, markupNumber: 3 });
-  ctx.session.isHintAvaliable = true;
-}
+export async function gameScene(ctx) {
+  console.log(TelegramScene.GAME);
 
-async function startHintTimer(ctx: AppContext) {
-  const { hintTimeout } = ctx.session;
+  ctx.state.user.telegram.scene = TelegramScene.GAME;
 
-  if (hintTimeout) {
-    clearTimeout(hintTimeout);
+  const { game, user } = ctx.state;
+  const { roundOrder = 0 } = user.telegram;
+
+  if (!game.rounds) {
+    return ctx.state.sendMessage({ ctx, messageNumber: 10, markupNumber: 2 });
   }
 
-  ctx.session.hintTimeout = setTimeout(() => showHintPreview(ctx), 10000);
-}
+  const round = game.rounds.find(x => x.order === roundOrder);
 
-async function showHint(props) {
-  const { ctx } = props;
-  const { game, roundOrder = 1, hintOrder = 0 } = ctx.session;
-
-  const { hints } = game.rounds.find(x => x.order === roundOrder);
-
-  await ctx.sendMessage({ ctx, message: hints[hintOrder], removeKeyboard: true });
-
-  const nextHint = hintOrder + 1;
-
-  if (nextHint < hints.length) {
-    ctx.session.hintOrder = nextHint;
-    ctx.session.isHintAvaliable = false;
-    startHintTimer(ctx);
-  }
-}
-
-export async function gameSceneEnter(props: SceneProps) {
-  const { ctx, gamesService } = props;
-  ctx.session.game = await gamesService.findOne(ctx.session.game.id, { relations: ['rounds', 'rounds.questions'] });
-
-  const { game, roundOrder = 1, questionOrder = 0 } = ctx.session;
-
-  if (!game.rounds) return ctx.sendMessage({ ctx, messageNumber: 12, markupNumber: 2 });
-
-  const { questions, hints } = game.rounds.find(x => x.order === roundOrder);
-
-  if (!questions.length) return ctx.sendMessage({ ctx, messageNumber: 13, markupNumber: 2 });
-
-  const { title, correctAnswer, medias = [] } = questions[questionOrder];
-
-  await ctx.sendMessage({ ctx, message: title, medias });
-
-  const savePrevious = (title ? 1 : 0) + medias.length;
-
-  await clearChat({ ...props, savePrevious });
-
-  if (hints && hints.length) {
-    startHintTimer(ctx);
+  if (!round?.questions?.length || !round?.active) {
+    return ctx.state.nextRound(ctx);
   }
 
-  ctx.session.correctAnswer = correctAnswer;
-  ctx.wizard.next();
-}
+  let savePrevious = 0;
 
-export async function gameScene(props: SceneProps) {
-  const { ctx, gamesService } = props;
+  for (const question of round.questions) {
+    const { title: message, medias } = question;
 
-  ctx.session.game = await gamesService.findOne(ctx.session.game.id, { relations: ['rounds', 'rounds.questions'] });
-  const { game, correctAnswer, roundOrder = 1, isHintAvaliable, hintTimeout } = ctx.session;
+    await ctx.state.sendMessage({ ctx, message, medias });
 
-  const correctAnswers = correctAnswer
-    .split(' ')
-    .join('')
-    .toLowerCase()
-    .split(',');
-
-  const answer = ctx.message.text
-    .split(' ')
-    .join('')
-    .toLowerCase();
-
-  if (correctAnswers.includes(answer)) {
-    await ctx.sendMessage({ ctx, messageNumber: 5 });
-
-    const nextRound = roundOrder + 1;
-
-    if (nextRound <= game.rounds.length) {
-      ctx.session.roundOrder = nextRound;
-      ctx.session.hintOrder = 0;
-      ctx.scene.reenter();
-    } else {
-      if (game.bye) {
-        await ctx.sendMessage({ ctx, message: game.bye.title });
-        await ctx.sendMessage({ ctx, message: game.bye.description });
-      }
-
-      await ctx.sendMessage({ ctx, messageNumber: 10, markupNumber: 2 });
-
-      const savePrevious = 1 + (game.bye ? (game.bye.title ? 1 : 0) + (game.bye.description ? 1 : 0) : 0);
-
-      await clearChat({ ...props, savePrevious });
-
-      if (hintTimeout) {
-        clearTimeout(hintTimeout);
-      }
-
-      ctx.scene.leave();
-    }
-  } else if (ctx.message.text.toLowerCase() === 'подсказка') {
-    if (isHintAvaliable) {
-      await showHint(props);
-    } else {
-      await ctx.sendMessage({ ctx, messageNumber: 7 });
-    }
-  } else {
-    const wrongs = game.wrongs || [];
-
-    const message = wrongs[Math.floor(Math.random() * wrongs.length)];
-    await ctx.sendMessage({ ctx, message, messageNumber: 6 });
+    savePrevious += (message ? 1 : 0) + medias?.length;
   }
+
+  await ctx.state.clearChat({ ctx, savePrevious });
+
+  await ctx.scene.enter(TelegramScene.GAME_HANDLER, null, true); // name, defaultState, silence -> if true, does`t call enter method in scene
+
+  ctx.state.user.telegram.scene = TelegramScene.GAME_HANDLER; // we have to change current scene here, because we didn`t enter in
 }

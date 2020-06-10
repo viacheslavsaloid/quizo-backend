@@ -30,7 +30,12 @@ export class RoundsService extends TypeOrmCrudService<Round> {
   }
 
   public async sort(rounds) {
-    await Promise.all(rounds.map((round, index) => this.roundRepository.update({ id: round.id }, { order: index + 1 })));
-    return this.roundRepository.find();
+    await Promise.all(rounds.map((round, order) => this.roundRepository.update({ id: round.id }, { order })));
+    return this.roundRepository.find({ relations: ['game'] });
+  }
+
+  public async getCount(options): Promise<number> {
+    const [_, count] = await this.roundRepository.findAndCount(options);
+    return count;
   }
 }

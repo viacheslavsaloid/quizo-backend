@@ -8,7 +8,7 @@ export class ExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    DebugLogger(this, request.url, exception);
+    DebugLogger(this, request.url + ' ', exception);
 
     const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 

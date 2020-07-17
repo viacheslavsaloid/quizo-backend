@@ -57,14 +57,12 @@ export class GamesController implements CrudController<Game> {
   }
 
   @Public()
-  @HasUserAccessTo('read')
   @Override()
   getMany(@ParsedRequest() req: CrudRequest) {
     return this.base.getManyBase(req);
   }
 
   @Public()
-  @HasUserAccessTo('read')
   @Override()
   getOne(@ParsedRequest() req: CrudRequest) {
     return this.base.getOneBase(req);
@@ -72,8 +70,9 @@ export class GamesController implements CrudController<Game> {
 
   @HasUserAccessTo('create')
   @Override()
-  createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
-    return this.base.createOneBase(req, dto);
+  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Game) {
+    const order = await this.service.getCount();
+    return this.service.createOne(req, { ...dto, order });
   }
 
   @HasUserAccessTo('create')
@@ -126,5 +125,10 @@ export class GamesController implements CrudController<Game> {
   hasAccess(@Param('id') gameId, @GetUser() user) {
     const { id: userId } = user;
     return this.service.hasAccess({ userId, gameId });
+  }
+
+  @Post('sort')
+  async sort(@Body() { data }) {
+    return this.service.sort(data);
   }
 }

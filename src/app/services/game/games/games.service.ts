@@ -32,6 +32,11 @@ export class GamesService extends TypeOrmCrudService<Game> {
     super(gameRepository);
   }
 
+  public async sort(games) {
+    await Promise.all(games.map((game, order) => this.gameRepository.update({ id: game.id }, { order })));
+    return this.gameRepository.find({ relations: ['owner'] });
+  }
+
   public async toogleActiveRound(params: ToogleActiveRoundProps): Promise<ToogleActiveRoundResponse> {
     const { roundId, gameId } = params;
 
@@ -117,7 +122,7 @@ export class GamesService extends TypeOrmCrudService<Game> {
     }
   }
 
-  public async getCount(options): Promise<number> {
+  public async getCount(options?): Promise<number> {
     const [_, count] = await this.gameRepository.findAndCount(options);
     return count;
   }

@@ -11,7 +11,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Swagger(UserDto)
-  @Post('/company/signup')
+  @Post('/company/sign_up')
   async signUpAsCompany(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
     const payload = await this.authService.signUp({ dto, role: UserRole.COMPANY });
     const token = await this.authService.generateAuthToken({ payload, fields: ['id', 'roles', 'name'] });
@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @Swagger(UserDto)
-  @Post('/company/signin')
+  @Post('/company/sign_in')
   async signInAsCompany(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
     const payload = await this.authService.signIn({ dto });
     const token = await this.authService.generateAuthToken({ payload, fields: ['id', 'roles', 'name'] });
@@ -27,7 +27,7 @@ export class AuthController {
   }
 
   @Swagger(UserDto)
-  @Post('/signup')
+  @Post('/sign_up')
   async signUpAsPlayer(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
     const payload = await this.authService.signUp({ dto, role: UserRole.PLAYER });
     const token = await this.authService.generateAuthToken({ payload });
@@ -35,7 +35,7 @@ export class AuthController {
   }
 
   @Swagger(UserDto)
-  @Post('/signin')
+  @Post('/sign_in')
   async signInAsPlayer(@Body(ValidationPipe) dto: UserDto): Promise<AuthResponse> {
     const payload = await this.authService.signIn({ dto });
     const token = await this.authService.generateAuthToken({ payload });

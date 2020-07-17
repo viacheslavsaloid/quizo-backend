@@ -20,9 +20,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         const user = new User();
         user.roles = [UserRole.NOT_REGISTERED];
         request.user = user;
-
-        return true;
       }
+
+      return true;
     }
 
     return super.canActivate(context);

@@ -16,8 +16,12 @@ export class Game extends AppBaseEntity {
   @Column()
   type: GameType;
 
+  @ApiProperty()
+  @Column('int')
+  order: number;
+
   @ApiProperty({ type: 'boolean' })
-  @Column('boolean')
+  @Column('boolean', { default: false })
   private: boolean;
 
   @ApiProperty({ required: false })
@@ -25,16 +29,16 @@ export class Game extends AppBaseEntity {
   activeRound: string;
 
   @ApiProperty({ required: false })
-  @Column('text', { nullable: true })
-  logo: string;
+  @Column('text', { array: true, default: {} })
+  logo: string[];
 
   @ApiProperty({ required: false })
-  @Column('text', { nullable: true })
-  background: string;
+  @Column('text', { array: true, default: {} })
+  background: string[];
 
   @ApiProperty({ required: false })
-  @Column('text', { nullable: true })
-  preview: string;
+  @Column('text', { array: true, default: {} })
+  preview: string[];
 
   @ApiProperty({ required: false })
   @Column('text', { array: true, nullable: true, default: '{}' })

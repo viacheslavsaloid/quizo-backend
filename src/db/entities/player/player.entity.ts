@@ -3,9 +3,18 @@ import { Entity, Column, ManyToOne } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { User } from '../user';
 import { Game } from '../game';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('players')
 export class Player extends AppBaseEntity {
+  @ApiProperty({ required: false })
+  @Column('jsonb', { default: () => "'[]'", })
+  history: [{
+    action: string,
+    date: Date,
+    description: string
+  }];
+
   @Column('boolean', { default: true })
   access: boolean;
 

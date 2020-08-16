@@ -17,7 +17,7 @@ export class Game extends AppBaseEntity {
   type: GameType;
 
   @ApiProperty({ type: 'boolean' })
-  @Column('boolean')
+  @Column('boolean', { default: true })
   private: boolean;
 
   @ApiProperty({ required: false })

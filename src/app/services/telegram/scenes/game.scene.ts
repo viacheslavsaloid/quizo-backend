@@ -5,18 +5,24 @@ export async function gameScene(ctx) {
 
   ctx.state.user.telegram.scene = TelegramScene.GAME;
 
-  const { game, user } = ctx.state;
+  const { player, user } = ctx.state;
   const { roundOrder = 0 } = user.telegram;
 
-  if (!game.rounds) {
+  if (!player.game.rounds) {
     return ctx.state.sendMessage({ ctx, messageNumber: 10, markupNumber: 2 });
   }
 
-  const round = game.rounds.find(x => x.order === roundOrder);
+  const round = player.game.rounds.find(x => x.order === roundOrder);
 
   if (!round?.questions?.length || !round?.active) {
     return ctx.state.nextRound(ctx);
   }
+
+  ctx.state.player.history.push({
+    action: `start_round`,
+    date: new Date(),
+    description: `Start Round ${round.order}`
+  });
 
   let savePrevious = 0;
 

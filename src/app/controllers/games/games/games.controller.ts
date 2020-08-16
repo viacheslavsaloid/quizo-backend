@@ -34,6 +34,12 @@ const GamesCrudOptions: CrudOptions = {
     join: {
       owner: {
         eager: true
+      },
+      players: {
+        eager: true,
+      },
+      'players.user': {
+        eager: true
       }
     }
   }

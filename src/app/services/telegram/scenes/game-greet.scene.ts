@@ -5,7 +5,7 @@ export async function gameGreetScene(ctx) {
 
   ctx.state.user.telegram.scene = TelegramScene.GAME_GREET;
 
-  const { game } = ctx.state;
+  const { game } = ctx.state.player;
 
   await ctx.state.sendMessage({ ctx, message: game.hi?.title });
   await ctx.state.sendMessage({ ctx, message: game.hi?.description });

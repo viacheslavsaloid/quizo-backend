@@ -11,13 +11,17 @@ export async function registrationHandlerScene(ctx, next) {
   const verified = await gamesService.isPlayerVerified({ playerId, userId });
 
   if (verified) {
-    const { game } = await gamesService.getPlayer(playerId, { relations: ['game', 'game.rounds', 'game.rounds.questions'] });
+    const player = await gamesService.getPlayer(playerId, { relations: ['game', 'game.rounds', 'game.rounds.questions'] });
 
-    const isRegistered = await gamesService.registerToGame({ playerId, userId, gameId: game.id });
+    const isRegistered = await gamesService.registerToGame({ playerId, userId, gameId: player.game.id });
 
     if (isRegistered) {
       ctx.state.user.telegram.playerId = playerId;
-      ctx.state.game = game;
+      ctx.state.player = player;
+      ctx.state.player.history.push({
+        action: 'registration',
+        date: new Date()
+      });
       await ctx.scene.enter(TelegramScene.GAME_GREET);
     }
   } else {

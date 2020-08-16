@@ -15,29 +15,6 @@ interface Props {
   savePrevious?: number;
 }
 
-export function getSendMessageFunc(props) {
-  const { ctx, repository } = props;
-
-  return async (props: SendMessage) => {
-    const { message, messageNumber, medias = [] } = props;
-
-    for (const media of medias) {
-      const mediaExist = await repository.findOne({ file_path: media });
-
-      const modifyMedia = mediaExist || {
-        file_path: media
-      };
-
-      const replyMedia = await sendMedia({ ctx, media: modifyMedia });
-
-      if (replyMedia && !mediaExist) await saveMediaOnTelegram({ replyMedia, media });
-    }
-
-    const isText = message || messageNumber || messageNumber === 0;
-    isText && (await sendText(props));
-  };
-}
-
 async function saveMessageId(msg, props: SendMessage) {
   const { ctx, removeMessage: remove = true } = props;
   const { messages = [] } = ctx.state.user.telegram;
@@ -45,13 +22,13 @@ async function saveMessageId(msg, props: SendMessage) {
   const getMessage = { id: ctx.message.message_id, remove };
   const replyMessage = { id: msg.message_id, remove };
 
-  const isGetDublicate = messages.find(x => x.id === getMessage.id);
-  const isReplyDublicate = messages.find(x => x.id === replyMessage.id);
+  const isGetDuplicate = messages.find(x => x.id === getMessage.id);
+  const isReplyDuplicate = messages.find(x => x.id === replyMessage.id);
 
   ctx.state.user.telegram.messages = [...messages];
 
-  isGetDublicate || ctx.state.user.telegram.messages.push(getMessage);
-  isReplyDublicate || ctx.state.user.telegram.messages.push(replyMessage);
+  isGetDuplicate || ctx.state.user.telegram.messages.push(getMessage);
+  isReplyDuplicate || ctx.state.user.telegram.messages.push(replyMessage);
 }
 
 async function sendMedia(props) {
@@ -83,7 +60,7 @@ async function sendText(props: SendMessage) {
   const replyMarkup = removeKeyboard ? Markup.removeKeyboard().extra() : markup || TELEGRAM_MARKUPS[markupNumber];
 
   const reply = await ctx.reply(replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
-  saveMessageId(reply, props);
+  await saveMessageId(reply, props);
   return reply;
 }
 
@@ -121,4 +98,27 @@ export async function clearChat(props: Props) {
   }
 
   ctx.state.user.telegram.messages = messages.filter(def => !messagesForDelete.some(del => del.id === def.id));
+}
+
+export function getSendMessageFunc(props) {
+  const { ctx, repository } = props;
+
+  return async (props: SendMessage) => {
+    const { message, messageNumber, medias = [] } = props;
+
+    for (const media of medias) {
+      const mediaExist = await repository.findOne({ file_path: media });
+
+      const modifyMedia = mediaExist || {
+        file_path: media
+      };
+
+      const replyMedia = await sendMedia({ ctx, media: modifyMedia });
+
+      if (replyMedia && !mediaExist) await saveMediaOnTelegram({ replyMedia, media });
+    }
+
+    const isText = message || messageNumber || messageNumber === 0;
+    isText && (await sendText(props));
+  };
 }

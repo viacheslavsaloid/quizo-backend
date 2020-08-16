@@ -1,5 +1,5 @@
 import { TelegramScene } from 'src/app/models/telegram/scenes.enum';
-import { parseString, nextRound } from 'src/app/utils/telegram';
+import { parseString } from 'src/app/utils/telegram';
 import { TELEGRAM_CHECK, TELEGRAM_MESSAGES } from 'src/assets';
 
 import * as moment from 'moment';
@@ -9,7 +9,7 @@ async function sendWrong(ctx, wrongs) {
   await ctx.state.sendMessage({ ctx, message, messageNumber: 5 });
 }
 
-async function sendHint(ctx, hints, hintOrder, lastHintDate) {
+async function sendHint(ctx, hints, roundOrder, hintOrder, lastHintDate) {
   const waitSec = 120;
 
   const startDate = moment(lastHintDate);
@@ -18,6 +18,11 @@ async function sendHint(ctx, hints, hintOrder, lastHintDate) {
   const diffSec = endDate.diff(startDate, 'seconds');
 
   if (!lastHintDate || diffSec >= waitSec) {
+    ctx.state.player.history.push({
+      action: 'hint',
+      date: new Date(),
+      description: `Round ${roundOrder}. Hint: ${hintOrder}`
+    });
     const message = hints[hintOrder];
     await ctx.state.sendMessage({ ctx, message, messageNumber: 7 });
     ctx.state.user.telegram.hintOrder = hintOrder + 1;
@@ -42,8 +47,8 @@ async function sendCorrect(ctx) {
 export async function gameHandlerScene(ctx) {
   console.log(TelegramScene.GAME_HANDLER);
 
-  const { game, user } = ctx.state;
-  const { wrongs = [], rounds } = game;
+  const { player, user } = ctx.state;
+  const { wrongs = [], rounds } = player.game;
   const { roundOrder = 0, hintOrder = 0, lastHintDate } = user.telegram;
 
   const { hints, correctAnswer } = rounds.find(x => x.order === roundOrder);
@@ -52,10 +57,20 @@ export async function gameHandlerScene(ctx) {
   const answer = parseString(ctx.message.text);
 
   if (correctAnswers.includes(answer)) {
+    ctx.state.player.history.push({
+      action: 'correct_answer',
+      date: new Date(),
+      description: `Round ${roundOrder}. Correct Answer: ${answer}`
+    });
     await sendCorrect(ctx);
   } else if (answer === TELEGRAM_CHECK[0]) {
-    await sendHint(ctx, hints, hintOrder, lastHintDate);
+    await sendHint(ctx, hints, roundOrder, hintOrder, lastHintDate);
   } else {
+    ctx.state.player.history.push({
+      action: 'wrong_answer',
+      date: new Date(),
+      description: `Round ${roundOrder}. Wrong Answer: ${answer}`
+    });
     await sendWrong(ctx, wrongs);
   }
 }

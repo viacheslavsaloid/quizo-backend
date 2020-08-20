@@ -10,7 +10,7 @@ async function sendWrong(ctx, wrongs) {
 }
 
 async function sendHint(ctx, hints, roundOrder, hintOrder, lastHintDate) {
-  const waitSec = 120;
+  const waitSec = 300;
 
   const startDate = moment(lastHintDate);
   const endDate = moment();

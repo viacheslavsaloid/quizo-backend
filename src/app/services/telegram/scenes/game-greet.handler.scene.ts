@@ -3,7 +3,7 @@ import { parseString } from '../../../utils/telegram';
 
 export async function gameGreetHandlerScene(ctx) {
   console.log(TelegramScene.GAME_GREET_HANDLER);
-  
+
   const { game } = ctx.state.player;
 
   const correctAnswers = parseString('Начать Игру, Start Game').split(',');
@@ -14,6 +14,9 @@ export async function gameGreetHandlerScene(ctx) {
       action: 'start_game',
       date: new Date()
     });
+
+    ctx.state.user.telegram.lastHintDate = new Date();
+
     await ctx.scene.enter(TelegramScene.GAME);
   } else {
     await ctx.state.sendMessage({ ctx, message: game.hi?.title });

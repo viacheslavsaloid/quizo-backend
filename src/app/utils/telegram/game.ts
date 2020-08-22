@@ -9,7 +9,7 @@ export async function nextRound(ctx) {
   if (roundOrder < player.game.rounds.length) {
     ctx.state.user.telegram.roundOrder = roundOrder + 1; // next round
     ctx.state.user.telegram.hintOrder = 0; // reset hints
-    ctx.state.user.telegram.lastHintDate = undefined; // reset hints
+    ctx.state.user.telegram.lastHintDate = new Date(); // reset hints
     nextScene = TelegramScene.GAME;
   } else {
     nextScene = TelegramScene.EXIT;

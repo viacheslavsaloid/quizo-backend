@@ -10,6 +10,6 @@ export async function gameGreetHandlerScene(ctx) {
     });
     await ctx.scene.enter(TelegramScene.GAME);
   } else {
-    await ctx.state.sendMessage({ ctx, messageNumber: 3, markupNumber: 1 });
+    await ctx.state.sendMessage({ ctx, messageNumber: 3 });
   }
 }

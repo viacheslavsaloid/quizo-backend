@@ -24,17 +24,11 @@ export async function gameScene(ctx) {
     description: `Start Round ${round.order}`
   });
 
-  let savePrevious = 0;
-
   for (const question of round.questions) {
     const { title: message, medias } = question;
 
     await ctx.state.sendMessage({ ctx, message, medias });
-
-    savePrevious += (message ? 1 : 0) + medias?.length;
   }
-
-  await ctx.state.clearChat({ ctx, savePrevious });
 
   await ctx.scene.enter(TelegramScene.GAME_HANDLER, null, true); // name, defaultState, silence -> if true, does`t call enter method in scene
 

@@ -79,25 +79,25 @@ async function saveMediaOnTelegram(props) {
 }
 
 export async function clearChat(props: Props) {
-  // const { ctx, force, deleteCurrent = true, savePrevious = 0 } = props;
-  //
-  // const { messages = [] } = ctx.state.user.telegram;
-  //
-  // const messagesForDelete = messages
-  //   .slice(0, messages.length - savePrevious) // * Deleate all except Save Previous from end
-  //   .filter(x => x.remove || force);
-  //
-  // if (deleteCurrent) {
-  //   await ctx.deleteMessage();
-  // }
-  //
-  // for (let i = 0; i < messagesForDelete.length; i++) {
-  //   try {
-  //     await ctx.deleteMessage(messagesForDelete[i].id);
-  //   } catch (err) {}
-  // }
-  //
-  // ctx.state.user.telegram.messages = messages.filter(def => !messagesForDelete.some(del => del.id === def.id));
+  const { ctx, force, deleteCurrent = true, savePrevious = 0 } = props;
+
+  const { messages = [] } = ctx.state.user.telegram;
+
+  const messagesForDelete = messages
+    .slice(0, messages.length - savePrevious) // * Deleate all except Save Previous from end
+    .filter(x => x.remove || force);
+
+  if (deleteCurrent) {
+    await ctx.deleteMessage();
+  }
+
+  for (let i = 0; i < messagesForDelete.length; i++) {
+    try {
+      await ctx.deleteMessage(messagesForDelete[i].id);
+    } catch (err) {}
+  }
+
+  ctx.state.user.telegram.messages = messages.filter(def => !messagesForDelete.some(del => del.id === def.id));
 }
 
 export function getSendMessageFunc(props) {

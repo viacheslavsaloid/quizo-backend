@@ -10,11 +10,7 @@ export async function gameGreetScene(ctx) {
   await ctx.state.sendMessage({ ctx, message: game.hi?.title });
   await ctx.state.sendMessage({ ctx, message: game.hi?.description });
 
-  await ctx.state.sendMessage({ ctx, messageNumber: 3, markupNumber: 1 });
-
-  const savePrevious = 1 + (game.hi?.title ? 1 : 0) + (game.hi?.description ? 1 : 0);
-
-  await ctx.state.clearChat({ ctx, savePrevious });
+  await ctx.state.sendMessage({ ctx, messageNumber: 3 });
 
   await ctx.scene.enter(TelegramScene.GAME_GREET_HANDLER, null, true); // name, defaultState, silence -> if true, does`t call enter method in scene
 

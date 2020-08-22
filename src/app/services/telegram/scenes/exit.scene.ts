@@ -12,10 +12,6 @@ export async function exithScene(ctx) {
 
   await ctx.state.sendMessage({ ctx, messageNumber: 9, markupNumber: 2 });
 
-  const savePrevious = 1 + (game.bye?.title ? 1 : 0) + (game.bye?.description ? 1 : 0);
-
-  await ctx.state.clearChat({ ctx, savePrevious });
-
   ctx.state.player.history.push({
     action: 'exit_game',
     date: new Date(),

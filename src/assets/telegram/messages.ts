@@ -14,5 +14,5 @@ export const TELEGRAM_MESSAGES = {
 };
 
 export const TELEGRAM_CHECK = {
-  0: `подсказка`
+  0: ['подсказка', 'подсказку', 'подсказке', 'подсказки']
 };

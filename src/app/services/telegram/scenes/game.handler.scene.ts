@@ -9,15 +9,20 @@ async function sendWrong(ctx, wrongs) {
   await ctx.state.sendMessage({ ctx, message, messageNumber: 5 });
 }
 
-async function sendHint(ctx, hints, roundOrder, hintOrder, lastHintDate) {
-  const waitSec = 300;
+async function sendHint(args) {
+  const { ctx, hints, roundOrder, hintOrder, lastHintDate } = args;
+  const waitSec = (hintOrder + 1) * 120;
 
   const startDate = moment(lastHintDate);
   const endDate = moment();
 
   const diffSec = endDate.diff(startDate, 'seconds');
 
-  if (!lastHintDate || diffSec >= waitSec) {
+  if(!lastHintDate) {
+    ctx.state.user.telegram.lastHintDate = new Date();
+  }
+
+  if (diffSec >= waitSec) {
     ctx.state.player.history.push({
       action: 'hint',
       date: new Date(),
@@ -63,8 +68,8 @@ export async function gameHandlerScene(ctx) {
       description: `Round ${roundOrder}. Correct Answer: ${answer}`
     });
     await sendCorrect(ctx);
-  } else if (answer === TELEGRAM_CHECK[0]) {
-    await sendHint(ctx, hints, roundOrder, hintOrder, lastHintDate);
+  } else if (TELEGRAM_CHECK[0].includes(answer)) {
+    await sendHint({ ctx, hints, roundOrder, hintOrder, lastHintDate });
   } else {
     ctx.state.player.history.push({
       action: 'wrong_answer',

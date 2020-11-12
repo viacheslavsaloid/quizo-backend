@@ -50,6 +50,18 @@ async function sendMedia(props) {
   ctx.deleteMessage(preview.message_id);
 
   await saveMessageId(reply, props);
+
+  const { team = [] } = ctx.state.player || {};
+  team.forEach((teamPlayer) => {
+    if (isPhoto) {
+      ctx.telegram.sendPhoto(teamPlayer.user.telegramId, mediaReply);
+    } else if (isVideo) {
+      ctx.telegram.sendVideo(teamPlayer.user.telegramId, mediaReply);
+    } else if (isAudio) {
+      ctx.telegram.sendAudio(teamPlayer.user.telegramId, mediaReply);
+    }
+  });
+
   return reply;
 }
 
@@ -62,12 +74,10 @@ async function sendText(props: SendMessage) {
   const reply = await ctx.reply(replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
   await saveMessageId(reply, props);
 
-  const { team } = ctx.state.player || {};
-  if (team?.length) {
-    team.forEach((teamPlayer) => {
-      ctx.telegram.sendMessage(teamPlayer.user.telegramId, replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
-    });
-  }
+  const { team = [] } = ctx.state.player || {};
+  team.forEach((teamPlayer) => {
+    ctx.telegram.sendMessage(teamPlayer.user.telegramId, replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
+  });
 
   return reply;
 }

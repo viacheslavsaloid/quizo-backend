@@ -61,6 +61,14 @@ async function sendText(props: SendMessage) {
 
   const reply = await ctx.reply(replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
   await saveMessageId(reply, props);
+
+  const { team } = ctx.state.player || {};
+  if (team?.length) {
+    team.forEach((teamPlayer) => {
+      ctx.telegram.sendMessage(teamPlayer.user.telegramId, replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
+    });
+  }
+
   return reply;
 }
 

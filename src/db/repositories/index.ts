@@ -16,6 +16,6 @@ export * from './user';
 export * from './telegram-media';
 
 export const AUTH_REPOSITORIES = [UserRepository, PlayerRepository];
-export const GAME_REPOSITORIES = [GameRepository, RoundRepository, QuestionRepository, AnswerRepository, PlayerRepository];
+export const GAME_REPOSITORIES = [UserRepository, GameRepository, RoundRepository, QuestionRepository, AnswerRepository, PlayerRepository];
 
 export const TELEGRAM_REPOSITORIES = [UserRepository, PlayerRepository, TelegramMediaRepository];

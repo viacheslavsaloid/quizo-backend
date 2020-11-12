@@ -121,9 +121,16 @@ export class GamesController implements CrudController<Game> {
   }
 
   @HasUserAccessTo('create')
-  @Post(':id/generate')
-  generateGameToken(@Param('id') gameId) {
-    return this.service.generateGameToken({ gameId });
+  @Post(':id/generate-player')
+  generatePlayerToken(@Param('id') gameId) {
+    return this.service.generatePlayerToken({ gameId, role: 'leader' });
+  }
+
+  @HasUserAccessTo('create')
+  @Post(':id/generate-teammate')
+  generateTeammateToken(@Param('id') gameId, @Body() body: { userId: string }) {
+    const { userId } = body;
+    return this.service.generatePlayerToken({ gameId, userId, role: 'team' });
   }
 
   @Public()

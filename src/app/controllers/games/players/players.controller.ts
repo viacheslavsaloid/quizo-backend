@@ -21,6 +21,16 @@ import { PlayersService } from 'src/app/services/game/players/players.service';
       user: {
         eager: true
       },
+      team: {
+        eager: true,
+      },
+      'team.leader': {
+        eager: true
+      },
+      'team.leader.user': {
+        alias: 'leaderUser',
+        eager: true
+      }
     }
   }
 })

@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Game } from 'src/db/entities/game';
 import { Player } from 'src/db/entities';
-import { PlayerRepository } from 'src/db/repositories';
+import { PlayerRepository, UserRepository } from 'src/db/repositories';
 import {
   ToogleActiveRoundProps,
   GenerateGameTokenProps,
@@ -16,9 +16,8 @@ import {
   ToogleActiveRoundResponse,
   ToogleAccessResponse,
   HasAccessResponse,
-  GenerateGameTokenResponse,
   RegisterToGameResponse,
-  VerifyPlayerResponse
+  VerifyPlayerResponse, GenerateGameTokenResponse
 } from 'src/app/models/games';
 import { AuthService } from '../../auth';
 
@@ -27,6 +26,7 @@ export class GamesService extends TypeOrmCrudService<Game> {
   constructor(
     @InjectRepository(Game) private gameRepository: Repository<Game>,
     private playerRepository: PlayerRepository,
+    private userRepository: UserRepository,
     private authService: AuthService
   ) {
     super(gameRepository);
@@ -67,13 +67,20 @@ export class GamesService extends TypeOrmCrudService<Game> {
     return { access: player ? player.access : false };
   }
 
-  public async generateGameToken(params: GenerateGameTokenProps): Promise<GenerateGameTokenResponse> {
-    const { gameId } = params;
+  public async generatePlayerToken(params: GenerateGameTokenProps): Promise<GenerateGameTokenResponse> {
+    const { gameId, userId, role } = params;
 
     const game = await this.gameRepository.findOne(gameId);
 
     const player = new Player();
     player.game = game;
+    player.role = role;
+
+    if (userId) {
+      const leader = await this.playerRepository.findOne(userId);
+
+      player.leader = leader;
+    }
 
     const createdPlayer = await player.save();
 
@@ -90,16 +97,19 @@ export class GamesService extends TypeOrmCrudService<Game> {
 
       if (game.private) {
         const isPlayerVerified = await this.isPlayerVerified({ playerId, userId });
-        if (!isPlayerVerified) throw new Error('1005');
+        if (!isPlayerVerified) {
+          throw new Error('1005');
+        }
       }
 
-      const token = game.private ? playerId : (await this.generateGameToken({ gameId })).token;
+      const token = game.private ? playerId : (await this.generatePlayerToken({ gameId, role: 'leader' })).token;
 
       await this.playerRepository.update(token, { user });
 
       const player = await this.playerRepository.findOne(token);
 
       return { token: player.id };
+
     } catch (error) {
       throw new ConflictException({
         code: error.message

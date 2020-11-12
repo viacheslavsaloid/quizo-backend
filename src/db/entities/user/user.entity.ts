@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, Column, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { AppBaseEntity } from '../base';
 import { UserRole } from './user-role.enum';
 import { Game } from '../game';

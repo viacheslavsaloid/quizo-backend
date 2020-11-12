@@ -3,7 +3,14 @@ import { InjectBot, TelegrafProvider, session } from 'nestjs-telegraf';
 import { AuthService } from '../auth';
 import { GamesService } from '../game';
 import { TelegramMediaRepository } from 'src/db/repositories';
-import { utilsMiddleware, authMiddleware, scenesMiddleware, saveMiddleware, gameMiddleware } from './middlewares';
+import {
+  utilsMiddleware,
+  authMiddleware,
+  scenesMiddleware,
+  saveMiddleware,
+  gameMiddleware,
+  roleMiddleware, teamMiddleware
+} from './middlewares';
 import { startHear } from './hears';
 import { stateMiddleware } from './middlewares/state.middleware';
 
@@ -24,6 +31,10 @@ export class TelegramService {
     this.bot.hears('/start', startHear);
 
     this.bot.use(gameMiddleware);
+
+    this.bot.use(roleMiddleware);
+
+    this.bot.use(teamMiddleware);
 
     this.bot.use(scenesMiddleware);
 

@@ -12,6 +12,9 @@ export const ORM_CONFIGS = {
     password: configService.get('ORM_PASSWORD'),
     database: configService.get<string>('ORM_DATABASE'),
     entities: [__dirname + '/../../../**/*.entity.{js,ts}'],
-    synchronize: configService.get('MODE') === 'dev'
+    synchronize: configService.get('MODE') === 'dev',
+    ssl: {
+      "rejectUnauthorized": false,
+    },
   })
 };

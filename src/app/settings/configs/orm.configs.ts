@@ -13,8 +13,8 @@ export const ORM_CONFIGS = {
     database: configService.get<string>('ORM_DATABASE'),
     entities: [__dirname + '/../../../**/*.entity.{js,ts}'],
     synchronize: configService.get('MODE') === 'dev',
-    ssl: {
+    ssl: configService.get('MODE') === 'prod' ? {
       "rejectUnauthorized": false,
-    },
+    } : null,
   })
 };

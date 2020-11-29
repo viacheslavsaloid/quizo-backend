@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- Дальше идёт содержание задания с зельем -->
+  <p style="margin:0cm 0cm 8pt"><span style="font-size:11pt"><span style="line-height:107%"><span
+          style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="line-height:107%"><span
+                style="font-family:&quot;Open Sans&quot;,serif">Вы выбираетесь из камеры! Однако, несколько Пожирателей
+                уже бегут к вам. К вашей большой удаче, палочки, отобранные у вас, были при них и при помощи ваших
+                коллег из предыдущей команды, вы заполучаете их обратно. Вы выбегаете из подземелья, предыдущая команда
+                остается, задерживая следующий отряд Пожирателей.</span></span></span></span></span></span></p>
+
+  <p style="margin:0cm 0cm 8pt"><span style="font-size:11pt"><span style="line-height:107%"><span
+          style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="line-height:107%"><span
+                style="font-family:&quot;Open Sans&quot;,serif">Пол начинает дрожать и раздается страшный грохот! Перед
+                вами возникает патронус Мак Гонагалл.</span></span></span></span></span></span></p>
+
+  <p style="text-align: center;"><iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen="" frameborder="0" height="315" src="https://www.youtube.com/embed/_XqzDQMLU3Y"
+      width="560"></iframe></p>
+
+  <p style="margin:0cm 0cm 8pt"><span style="font-size:11pt"><span style="line-height:107%"><span
+          style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="line-height:107%"><span
+                style="font-family:&quot;Open Sans&quot;,serif">Вы быстро добираетесь до кабинета Снейпа и, не
+                церемонясь, разносите дверь в щепки! Быстро обыскав кабинет, вы находите запертый ящик в столе. Самый
+                опытный член команды, специалист по поиску, утверждает, что карта там.<br />
+                <br />
+                Ящик имеет целых 15 цифр магического пароля! Угадать такое просто не возможно! Тут никакое зелье не
+                поможет. Хотя&hellip;</span></span></span></span></span></span></p>
+
+  <p style="margin:0cm 0cm 8pt"><img alt="" class="has-target"
+      src="https://questgames.com.ua/storage/harrypotter/felicis.jpg" usemap="#image-map" /></p>
+
+  <p><map name="image-map"><area alt="Любовное зелье" class="x1" coords="442,300,124"
+        href="https://questgames.com.ua/storage/harrypotter/Lovepotion2.jpg" shape="circle" target="_blank"
+        title="Любовное зелье" /> <area alt="Яд" class="x2" coords="1571,297,123"
+        href="https://questgames.com.ua/storage/harrypotter/Weedosoros.jpg" shape="circle" target="_blank" title="Яд" />
+      <area alt="Оборотное зелье" class="x3" coords="1057,608,133"
+        href="https://questgames.com.ua/storage/harrypotter/PolyjuicePotion.jpg" shape="circle" target="_blank"
+        title="Оборотное зелье" /> <area alt="Зелье рыгания" class="x4" coords="453,852,142"
+        href="https://questgames.com.ua/storage/harrypotter/ErumpentPotion.jpg" shape="circle" target="_blank"
+        title="Зелье рыгания" /> <area alt="Зелье удачи" class="x5" coords="1568,877,123"
+        href="https://questgames.com.ua/storage/harrypotter/FelixFelicis3.jpg" shape="circle" target="_blank"
+        title="Зелье удачи" /></map></p>
+
+
+  <!-- Дальше идут скрипты для работы задания с зельем -->
+
+  <script>
+    function new_hint_button(button) {
+      let form = $(button).closest('form');
+      let data = form.serialize() + '&' + button.name;
+      refresh(data);
+    }
+    window.new_hint_button = new_hint_button;
+    $('div#autoupdateable .out_hint .btn.btn-default.btn-xs').attr('onclick', 'new_hint_button(this)');
+    console.log('task');
+    $("div#out_bonuses").hide();
+
+    $(document).ready(function () {
+
+      function imgMap(img) {
+        var imgWidth = $(img).width();
+        var imgHeight = $(img).height();
+        var x1 = Math.floor(imgWidth * 0.21582);
+        var y1 = Math.floor(imgHeight * 0.260417);
+        var r1 = Math.round(imgWidth * 0.060546875);
+        $('map area.x1').attr('coords', x1 + ',' + y1 + ',' + r1);
+        var x2 = Math.floor(imgWidth * 0.76708984375);
+        var y2 = Math.floor(imgHeight * 0.2578125);
+        var r2 = Math.round(imgWidth * 0.06005859375);
+        $('map area.x2').attr('coords', x2 + ',' + y2 + ',' + r2);
+        var x3 = Math.floor(imgWidth * 0.51611328125);
+        var y3 = Math.floor(imgHeight * 0.528);
+        var r3 = Math.round(imgWidth * 0.06494140625);
+        $('map area.x3').attr('coords', x3 + ',' + y3 + ',' + r3);
+        var x4 = Math.floor(imgWidth * 0.22119140625);
+        var y4 = Math.floor(imgHeight * 0.7395833);
+        var r4 = Math.round(imgWidth * 0.0693359375);
+        $('map area.x4').attr('coords', x4 + ',' + y4 + ',' + r4);
+        var x5 = Math.floor(imgWidth * 0.765625);
+        var y5 = Math.floor(imgHeight * 0.761284722);
+        var r5 = Math.round(imgWidth * 0.06005859375);
+        $('map area.x5').attr('coords', x5 + ',' + y5 + ',' + r5);
+      }
+
+      $('img.has-target').each(function () {
+        if (this.complete || this.readyState === 4) {
+          imgMap(this);
+        } else {
+          $(this).on('load', function () {
+            imgMap(this);
+          });
+        }
+      });
+
+      $('map area.x5').click(function () {
+        setTimeout(function () {
+          window.location.href = window.location.href + '&a=yesyouhere';
+        }, 777);
+      });
+
+      $('form#answer_form').submit(function (e) {
+        var noup = window.location.search.toString().indexOf('yesyouhere');
+        if (noup == -1) {
+          return true;
+        } else {
+          var fm = $(this);
+          var answerLen = fm.find('input.form-control').val().length;
+          if (answerLen === 15) {
+            $(this).unbind('submit');
+            enter('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀');
+          } else {
+            return true;
+          }
+        }
+      });
+
+    });
+  </script>
+
+
+</body>
+
+</html>

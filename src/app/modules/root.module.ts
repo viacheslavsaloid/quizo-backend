@@ -17,6 +17,9 @@ import { MorganModule, MorganInterceptor } from 'nest-morgan';
 import { TelegramModule } from './telegram.module';
 import { TransformInterceptor } from '../interceptors';
 import { SocketModule } from './socket.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { TemplatesModule } from './templates.module';
 
 const ROOT_IMPORTS = [
   ConfigModule.forRoot(CONFIG_CONFIGS),
@@ -28,7 +31,12 @@ const ROOT_IMPORTS = [
   GameModule,
   AuthModule,
   ImagesModule,
-  TelegramModule
+  TelegramModule,
+  TemplatesModule,
+  ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', '..', '..', 'templates'),
+    serveRoot: '/templates',
+  }),
 ];
 
 @Module({

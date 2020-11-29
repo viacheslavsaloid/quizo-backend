@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <!-- Дальше идёт название задания платформы 9 и 3/4 -->
+
+  <div id="task_title">Задание 9<span>⠀</span>10</div>
+
+  <!-- Дальше идёт содержание задания платформы 9 и 3/4 -->
+
+  <p style="margin:0cm 0cm 8pt"><img alt="" src="http://ipic.su/img/img7/fs/kiss_244kb.1588247963.jpg"
+      style="width: 900px;" /></p>
+
+  <p style="margin:0cm 0cm 8pt">&nbsp;</p>
+
+  <div id="gtx-trans" style="position: absolute; left: -87px; top: -9px;">
+    <div class="gtx-trans-icon">&nbsp;</div>
+  </div>
+
+  <!-- Дальше идут скрипты для работы задания платформы 9 и 3/4 -->
+
+  <script>
+    function new_hint_button(button) {
+      let form = $(button).closest('form');
+      let data = form.serialize() + '&' + button.name;
+      refresh(data);
+    }
+    window.new_hint_button = new_hint_button;
+    $('div#autoupdateable .out_hint .btn.btn-default.btn-xs').attr('onclick', 'new_hint_button(this)');
+    $('div#out_answer_frame').hide();
+
+    $('div#task_title span').click(function () {
+      enter('⠀ ⠀⠀ ⠀⠀⠀');
+    });
+  </script>
+
+
+
+</body>
+
+</html>

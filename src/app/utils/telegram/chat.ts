@@ -52,7 +52,7 @@ async function sendMedia(props) {
   await saveMessageId(reply, props);
 
   const { team = [] } = ctx.state.player || {};
-  team.forEach((teamPlayer) => {
+  team.filter((teamPlayer) => teamPlayer.user).forEach((teamPlayer) => {
     if (isPhoto) {
       ctx.telegram.sendPhoto(teamPlayer.user.telegramId, mediaReply);
     } else if (isVideo) {
@@ -75,7 +75,7 @@ async function sendText(props: SendMessage) {
   await saveMessageId(reply, props);
 
   const { team = [] } = ctx.state.player || {};
-  team.forEach((teamPlayer) => {
+  team.filter((teamPlayer) => teamPlayer.user).forEach((teamPlayer) => {
     ctx.telegram.sendMessage(teamPlayer.user.telegramId, replyMessage, { ...replyMarkup, parse_mode: 'HTML' });
   });
 

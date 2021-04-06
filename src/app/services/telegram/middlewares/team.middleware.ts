@@ -3,6 +3,8 @@ export async function teamMiddleware(ctx, next) {
 
   const { team, role = [] } = ctx.state.player || {};
 
+  console.log("--------> TEAM", team);
+
   if (role.includes('leader') && team?.length) {
 
     team.filter((teamPlayer) => teamPlayer.user).forEach((teamPlayer) => {

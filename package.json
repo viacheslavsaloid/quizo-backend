@@ -70,7 +70,7 @@
     "swagger-ui-express": "^4.1.4",
     "telegraf": "^3.38.0",
     "telegraf-session-postgresql": "^1.0.3",
-    "typeorm": "^0.2.24",
+    "typeorm": "^0.2.25",
     "webpack": "^4.43.0"
   },
   "devDependencies": {
